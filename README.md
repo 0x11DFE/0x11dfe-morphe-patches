@@ -38,7 +38,22 @@ persisted by the app (no redirect loop), and the screen never appears. The patch
 24-byte window unique to this build and fails loudly if the bundle changed. Note: upgrade
 upsell buttons elsewhere also just return to the app, consistent with an unlocked build.
 
-## Update policy (v1.2.0+)
+## Patches list
+
+<!-- PATCHES_START EXPANDED -->
+
+<!-- Do not modify this section by hand. The patch list is generated when release.yml creates a new release. -->
+
+<!-- PATCHES_END -->
+
+## Update policy (v1.3.0+, semantic-release)
+
+Releases are automated by semantic-release: push conventional commits to main
+(`feat:` minor, `fix:`/`bump:`/`perf:` patch, `BREAKING CHANGE:` major). Version,
+CHANGELOG, patches-bundle.json, patches-list.json and the patch table above are
+generated and committed automatically - never edit them by hand.
+
+After a Waypoint app update:
 
 Patches are NOT version-pinned: they are offered for any APK and fail loudly when a
 target is missing. After a Waypoint update:
@@ -47,6 +62,8 @@ target is missing. After a Waypoint update:
   `assets/index.android.bundle` (needs `pip install hermes-dec`) and paste the printed
   `pattern` into `SkipOnboardingPaywallPatch.kt`.
 To restore strict version gating, re-add `compatibleWith(COMPATIBILITY_WAYPOINT)`.
+
+Always `git pull --rebase` before pushing: the release bot commits metadata to main.
 
 ## Known limits (server-side, not unlockable locally)
 
