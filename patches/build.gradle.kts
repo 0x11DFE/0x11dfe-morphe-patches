@@ -4,10 +4,10 @@ patches {
     about {
         name = "0x11DFE Morphe patches"
         description = "Patches for apps I use - currently Waypoint (com.greycastel.waypoint)"
-        source = "https://github.com/0x11DFE/0x11dfe-morphe-patches"
+        source = "https://github.com/0x11DFE/morphe-patches"
         author = "0x11DFE"
         contact = "https://github.com/0x11DFE"
-        website = "https://github.com/0x11DFE/0x11dfe-morphe-patches"
+        website = "https://github.com/0x11DFE/morphe-patches"
         license = "GPLv3"
     }
 }

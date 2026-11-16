@@ -10,11 +10,11 @@ more as needed:
 
 ## Add to Morphe
 
-<a href="https://morphe.software/add-source?github=0x11DFE/0x11dfe-morphe-patches">
+<a href="https://morphe.software/add-source?github=0x11DFE/morphe-patches">
   <img src=".github/assets/add-to-morphe.svg" alt="Add to Morphe" height="48">
 </a>
 
-`https://github.com/0x11DFE/0x11dfe-morphe-patches`
+`https://github.com/0x11DFE/morphe-patches`
 
 ## Patches
 
