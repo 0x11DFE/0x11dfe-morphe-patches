@@ -1,83 +1,29 @@
 {
   "NOTE": "Do NOT manually edit this file. This file is automatically updated when semantic release (release.yml) runs. Manually editing this file can break your releases and break third party tools that use this file.",
-  "version": "1.1.0",
+  "version": "unspecified",
   "patches": [
     {
       "name": "Disable PairIP license check",
       "description": "Empties com.pairip.licensecheck.LicenseClient.checkLicense so the re-signed patched APK is not killed by Google Play PairIP license enforcement. Generic: works on any PairIP-protected app with this class.",
-      "default": true,
+      "default": false,
       "dependencies": [],
-      "compatiblePackages": [
-        {
-          "packageName": "com.greycastel.waypoint",
-          "name": "Waypoint",
-          "description": null,
-          "apkFileType": "APK",
-          "appIconColor": "#4C8BF5",
-          "signatures": null,
-          "targets": [
-            {
-              "version": "1.10.1",
-              "versionCodes": null,
-              "isExperimental": false,
-              "minSdk": null,
-              "description": null
-            }
-          ]
-        }
-      ],
+      "compatiblePackages": null,
       "options": []
     },
     {
-      "name": "Skip onboarding paywall",
-      "description": "The paywall screen shown after the tutorial immediately invokes the app's own free-choice handler (completeOnboarding + navigate home) and renders nothing. Also makes the in-app upgrade upsell buttons return to the app, which is consistent with an already-unlocked build.",
-      "default": true,
+      "name": "Skip Waypoint onboarding paywall",
+      "description": "The paywall screen shown after the Waypoint tutorial immediately invokes the app's own free-choice handler (completeOnboarding + navigate home) and renders nothing. Not version-pinned: matches the PaywallScreen bytecode pattern and fails cleanly when the app is rebuilt.",
+      "default": false,
       "dependencies": [],
-      "compatiblePackages": [
-        {
-          "packageName": "com.greycastel.waypoint",
-          "name": "Waypoint",
-          "description": null,
-          "apkFileType": "APK",
-          "appIconColor": "#4C8BF5",
-          "signatures": null,
-          "targets": [
-            {
-              "version": "1.10.1",
-              "versionCodes": null,
-              "isExperimental": false,
-              "minSdk": null,
-              "description": null
-            }
-          ]
-        }
-      ],
+      "compatiblePackages": null,
       "options": []
     },
     {
       "name": "Unlock Waypoint Pro",
       "description": "Resolves the RN bridge getCustomerInfo promise with a fabricated CustomerInfo carrying an active lifetime 'Waypoint Pro' entitlement (product waypoint_lifetime), and injects the same entitlement into the hybridcommon mapper. Works even when api.revenuecat.com is unreachable.",
-      "default": true,
+      "default": false,
       "dependencies": [],
-      "compatiblePackages": [
-        {
-          "packageName": "com.greycastel.waypoint",
-          "name": "Waypoint",
-          "description": null,
-          "apkFileType": "APK",
-          "appIconColor": "#4C8BF5",
-          "signatures": null,
-          "targets": [
-            {
-              "version": "1.10.1",
-              "versionCodes": null,
-              "isExperimental": false,
-              "minSdk": null,
-              "description": null
-            }
-          ]
-        }
-      ],
+      "compatiblePackages": null,
       "options": []
     }
   ]
