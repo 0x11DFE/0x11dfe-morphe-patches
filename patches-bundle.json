@@ -1,7 +1,7 @@
 {
-  "created_at": "2026-11-16T16:17:05",
-  "description": "## [1.2.2](https://github.com/0x11DFE/waypoint-morphe-patches/compare/v1.2.1...v1.2.2) (2026-11-16)\n\n### Bug Fixes\n\n* migrate to official Morphe semantic-release pipeline ([fc639fd](https://github.com/0x11DFE/waypoint-morphe-patches/commit/fc639fd84b0361f2ec6d68d467bf2fe61c43d6d6))",
-  "download_url": "https://github.com/0x11DFE/waypoint-morphe-patches/releases/download/v1.2.2/patches-1.2.2.mpp",
+  "created_at": "2026-11-16T16:20:05",
+  "description": "## [1.2.3](https://github.com/0x11DFE/waypoint-morphe-patches/compare/v1.2.2...v1.2.3) (2026-11-16)\n\n### Bug Fixes\n\n* declare universal patches default false ([7948402](https://github.com/0x11DFE/waypoint-morphe-patches/commit/7948402d2da38d43acce3ada033371eae6c732c3))",
+  "download_url": "https://github.com/0x11DFE/waypoint-morphe-patches/releases/download/v1.2.3/patches-1.2.3.mpp",
   "signature_download_url": "",
-  "version": "1.2.2"
+  "version": "1.2.3"
 }

@@ -1,3 +1,9 @@
+## [1.2.3](https://github.com/0x11DFE/waypoint-morphe-patches/compare/v1.2.2...v1.2.3) (2026-11-16)
+
+### Bug Fixes
+
+* declare universal patches default false ([7948402](https://github.com/0x11DFE/waypoint-morphe-patches/commit/7948402d2da38d43acce3ada033371eae6c732c3))
+
 ## [1.2.2](https://github.com/0x11DFE/waypoint-morphe-patches/compare/v1.2.1...v1.2.2) (2026-11-16)
 
 ### Bug Fixes
