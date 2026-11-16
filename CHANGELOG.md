@@ -1,3 +1,10 @@
+## [1.7.1](https://github.com/0x11DFE/morphe-patches/compare/v1.7.0...v1.7.1) (2026-11-16)
+
+### Bug Fixes
+
+* disambiguate signature MD5 fingerprint from kr-script cache hasher ([35c303e](https://github.com/0x11DFE/morphe-patches/commit/35c303e39ebb35d178f0d6abb828e92c77050f94))
+* import methodCall filter helper ([b5eb807](https://github.com/0x11DFE/morphe-patches/commit/b5eb8074ef3340bca96b0532caf52073837cb6af))
+
 ## [1.7.0](https://github.com/0x11DFE/morphe-patches/compare/v1.6.0...v1.7.0) (2026-11-16)
 
 ### New Features
