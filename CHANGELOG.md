@@ -1,3 +1,13 @@
+## [1.5.0](https://github.com/0x11DFE/morphe-patches/compare/v1.4.0...v1.5.0) (2026-11-16)
+
+### New Features
+
+* Scene random device ID option, default expiry 2077-01-01, APK download sources ([34372d2](https://github.com/0x11DFE/morphe-patches/commit/34372d2330c14cbb38ebbaa9b4ab36dd7db32c6e))
+
+### Bug Fixes
+
+* nullable boolean option check compiles ([fe7ec75](https://github.com/0x11DFE/morphe-patches/commit/fe7ec758c8f096b49af84cc59735b98fb1fef547))
+
 ## [1.4.0](https://github.com/0x11DFE/morphe-patches/compare/v1.3.0...v1.4.0) (2026-11-16)
 
 ### New Features
