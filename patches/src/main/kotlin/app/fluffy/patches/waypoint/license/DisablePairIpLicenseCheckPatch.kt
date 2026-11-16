@@ -1,9 +1,8 @@
 package app.fluffy.patches.waypoint.license
 
 import app.fluffy.patches.shared.Constants.COMPATIBILITY_WAYPOINT
+import app.fluffy.patches.waypoint.clearBody
 import app.morphe.patcher.extensions.InstructionExtensions.addInstructions
-import app.morphe.patcher.extensions.InstructionExtensions.instructions
-import app.morphe.patcher.extensions.InstructionExtensions.removeInstructions
 import app.morphe.patcher.patch.bytecodePatch
 
 @Suppress("unused")
@@ -24,7 +23,7 @@ val disablePairIpLicenseCheckPatch = bytecodePatch(
         licenseClient.methods
             .first { it.name == "checkLicense" && it.returnType == "V" }
             .apply {
-                removeInstructions(0, instructions.count())
+                clearBody()
                 addInstructions(0, "return-void")
             }
     }

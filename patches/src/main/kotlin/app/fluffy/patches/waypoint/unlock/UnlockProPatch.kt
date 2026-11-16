@@ -1,9 +1,9 @@
 package app.fluffy.patches.waypoint.unlock
 
 import app.fluffy.patches.shared.Constants.COMPATIBILITY_WAYPOINT
+import app.fluffy.patches.waypoint.clearBody
+import app.fluffy.patches.waypoint.ensureRegisters
 import app.morphe.patcher.extensions.InstructionExtensions.addInstructions
-import app.morphe.patcher.extensions.InstructionExtensions.instructions
-import app.morphe.patcher.extensions.InstructionExtensions.removeInstructions
 import app.morphe.patcher.patch.bytecodePatch
 
 @Suppress("unused")
@@ -23,8 +23,8 @@ val unlockProPatch = bytecodePatch(
                 it.returnType == "V" &&
                 it.parameterTypes == listOf("Lcom/facebook/react/bridge/Promise;")
         }.apply {
-            implementation?.registerCount = 8
-            removeInstructions(0, instructions.count())
+            clearBody()
+            ensureRegisters(8)
             addInstructions(
                 0,
                 """
@@ -202,7 +202,8 @@ val unlockProPatch = bytecodePatch(
 
         mapperClass.methods.first { it.name == "map" && it.returnType == "Ljava/util/Map;" }
             .apply {
-                removeInstructions(0, instructions.count())
+                clearBody()
+                ensureRegisters(8)
                 addInstructions(
                     0,
                     """
