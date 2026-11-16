@@ -32,9 +32,10 @@ all three builds.
   delegates to `b()`, so it is covered too.
 - The `expiry-date` patch option (yyyy-MM-dd, default 2077-01-01) is converted to
   epoch milliseconds at patch time and baked into that constant.
-- The `random-device-id` patch option (default off) rewrites the device-ID holder's
-  `a()Ljava/lang/String;` (class renamed per build: `at` -> `tt` -> `nu`) to return
-  `UUID.randomUUID().toString()`, so activation requests carry a fresh ID every time.
+- The standalone "Random device ID" patch (off by default) rewrites the device-ID
+  holder's `a()Ljava/lang/String;` (class renamed per build: `at` -> `tt` -> `nu`) to
+  return `UUID.randomUUID().toString()`, so activation requests carry a fresh ID every
+  time.
 - `ActivationCodeResponse.getType()` is forced to `"perpetual"` so any activation
   attempt stores the perpetual license type.
 - The signature-MD5 getter is forced to `"34ea0e93b18c7df94decd663857bb3bf"`
