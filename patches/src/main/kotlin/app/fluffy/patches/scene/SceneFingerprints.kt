@@ -1,6 +1,7 @@
 package app.fluffy.patches.scene
 
 import app.morphe.patcher.Fingerprint
+import app.morphe.patcher.methodCall
 
 /**
  * La/c3;-equivalent: parses the stored license state ("success@<millis>", "expired",
