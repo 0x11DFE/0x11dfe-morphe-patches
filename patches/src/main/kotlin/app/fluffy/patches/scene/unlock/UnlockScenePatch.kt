@@ -5,30 +5,56 @@ import app.fluffy.patches.waypoint.clearBody
 import app.fluffy.patches.waypoint.ensureRegisters
 import app.morphe.patcher.extensions.InstructionExtensions.addInstructions
 import app.morphe.patcher.extensions.InstructionExtensions.removeInstructions
+import app.morphe.patcher.patch.PatchException
 import app.morphe.patcher.patch.bytecodePatch
+import app.morphe.patcher.patch.stringOption
+import java.time.LocalDate
+import java.time.ZoneOffset
 
 @Suppress("unused")
 val unlockSceneProPatch = bytecodePatch(
     name = "Unlock Scene N1",
     description = "Unlocks Scene N1: the license state parser is forced to a perpetual " +
-        "success (expiry 3089-12-31), the activation code type is reported as perpetual, " +
+        "success (configurable expiry), the activation code type is reported as perpetual, " +
         "and the APK signature MD5 the app reports to omarea's activation binding is " +
         "spoofed to the original signing key so re-signed builds still match.",
 ) {
     compatibleWith(COMPATIBILITY_SCENE)
 
+    val expiryDate by stringOption(
+        key = "expiry-date",
+        default = "3089-12-31",
+        values = mapOf(
+            "3089-12-31" to "Far future (default)",
+            "2100-01-01" to "Year 2100",
+            "2030-01-01" to "Year 2030",
+        ),
+        title = "License expiry date",
+        description = "Date the spoofed Scene N1 license expires, as yyyy-MM-dd. " +
+            "The app shows it on the user page; anything in the future keeps Pro active.",
+        required = true,
+        validator = { it != null && runCatching { LocalDate.parse(it) }.isSuccess },
+    )
+
     execute {
+        val millis = try {
+            LocalDate.parse(expiryDate)
+                .atStartOfDay(ZoneOffset.UTC).toInstant().toEpochMilli().toString()
+        } catch (e: Exception) {
+            throw PatchException("Invalid expiry-date '$expiryDate' (expected yyyy-MM-dd): ${e.message}")
+        }
+
         // La/c3;->b(String) ActivatedStateModel parses the stored license state
         // ("success@<millis>" / "expired" / ...). Replace the state source
         // (this.b.toString(), instructions 0-2) with a constant so every call
-        // yields activated=true with the far-future expiry.
+        // yields activated=true with the configured expiry.
         mutableClassDefBy("La/c3;").methods.first {
             it.name == "b" &&
                 it.parameterTypes == listOf("Ljava/lang/String;") &&
                 it.returnType == "Lcom/omarea/model/ActivatedStateModel;"
         }.apply {
             removeInstructions(0, 3)
-            addInstructions(0, "const-string v0, \"success@35343792000000\"")
+            addInstructions(0, "const-string v0, \"success@$millis\"")
         }
 
         // ActivationCodeResponse.getType() decides which license type gets stored
@@ -43,16 +69,17 @@ val unlockSceneProPatch = bytecodePatch(
         }
 
         // Signature MD5 of the APK cert (activation binding). The helper class
-        // was renamed between builds: at1.C (2026.10) -> rv1.B (2026.11).
-        val signatureMethod = listOf("La/at1;" to "C", "La/rv1;" to "B")
+        // was renamed between builds: at1.C (2026.10) -> rv1.B (2026.11 PR1) ->
+        // mw1.B (2026.11 PR2).
+        val signatureMethod = listOf("La/at1;" to "C", "La/rv1;" to "B", "La/mw1;" to "B")
             .firstNotNullOfOrNull { (className, methodName) ->
                 runCatching { mutableClassDefBy(className) }.getOrNull()?.methods?.firstOrNull {
                     it.name == methodName &&
                         it.parameterTypes == listOf("Landroid/content/Context;", "Ljava/lang/String;") &&
                         it.returnType == "Ljava/lang/String;"
                 }
-            } ?: throw IllegalStateException(
-                "Scene signature MD5 method not found (tried at1.C and rv1.B)"
+            } ?: throw PatchException(
+                "Scene signature MD5 method not found (tried at1.C, rv1.B, mw1.B)"
             )
         signatureMethod.apply {
             clearBody()
