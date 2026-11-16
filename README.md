@@ -73,9 +73,9 @@ Morphe Manager does not auto-discover repos: users add a source URL by hand. To 
 updates, CI builds the bundle and attaches it to a GitHub release.
 
 1. Push this repo to GitHub (main branch).
-2. Create a classic PAT with `read:packages` and add it as the repository secret
-   `MORPHE_TOKEN` (Settings -> Secrets and variables -> Actions). The Morphe Gradle
-   plugin resolves from `maven.pkg.github.com/MorpheApp/registry`.
+2. No secrets required: the included workflow authenticates to the Morphe Gradle
+   plugin registry (`maven.pkg.github.com/MorpheApp/registry`) with the default
+   Actions `GITHUB_TOKEN`.
 3. Tag a release: `git tag v1.0.0 && git push --tags`. The workflow builds
    `patches/build/libs/patches-<version>.mpp` plus `patches-list.json` and attaches
    them to the release.

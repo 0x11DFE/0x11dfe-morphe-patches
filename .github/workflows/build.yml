@@ -6,6 +6,10 @@ on:
     tags: [ 'v*' ]
   workflow_dispatch:
 
+permissions:
+  contents: write
+  packages: read
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -15,16 +19,14 @@ jobs:
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: '17'
+          java-version: '21'
 
-      # MORPHE_TOKEN = classic PAT with read:packages, needed to resolve the
-      # app.morphe.patches Gradle plugin from GitHub Packages (MorpheApp/registry).
-      # The default GITHUB_TOKEN cannot read packages from another repo.
-      # ubuntu runners ship the Android SDK; ANDROID_HOME is already set.
+      # The Morphe registry (maven.pkg.github.com/MorpheApp/registry) resolves for
+      # the workflow's default GITHUB_TOKEN, same as every community patch repo.
+      # GITHUB_ACTOR is provided by the runner automatically.
       - name: Build .mpp
         env:
-          GITHUB_ACTOR: ${{ github.actor }}
-          GITHUB_TOKEN: ${{ secrets.MORPHE_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           chmod +x gradlew
           ./gradlew :patches:buildAndroid :patches:generatePatchesList --no-daemon
