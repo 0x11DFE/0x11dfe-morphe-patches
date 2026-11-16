@@ -1,3 +1,9 @@
+## [1.4.0](https://github.com/0x11DFE/morphe-patches/compare/v1.3.0...v1.4.0) (2026-11-16)
+
+### New Features
+
+* Scene unlock expiry-date option and 2026.11 PreRelease 2 support ([bafbe78](https://github.com/0x11DFE/morphe-patches/commit/bafbe78743817987fae4e2a6e86fc6adb70732f5))
+
 ## [1.3.0](https://github.com/0x11DFE/0x11dfe-morphe-patches/compare/v1.2.4...v1.3.0) (2026-11-16)
 
 ### New Features

@@ -50,7 +50,7 @@ upsell buttons elsewhere also just return to the app, consistent with an unlocke
 ## Patches list
 
 <!-- PATCHES_START EXPANDED -->
-> **[v1.3.0](https://github.com/0x11DFE/0x11dfe-morphe-patches/releases/tag/v1.3.0)**&nbsp;&nbsp;•&nbsp;&nbsp;`main`&nbsp;&nbsp;•&nbsp;&nbsp;4 patches total
+> **[v1.4.0](https://github.com/0x11DFE/morphe-patches/releases/tag/v1.4.0)**&nbsp;&nbsp;•&nbsp;&nbsp;`main`&nbsp;&nbsp;•&nbsp;&nbsp;4 patches total
 <details open>
 <summary>📦 Waypoint&nbsp;&nbsp;•&nbsp;&nbsp;3 patches</summary>
 <br>
@@ -78,12 +78,12 @@ upsell buttons elsewhere also just return to the app, consistent with an unlocke
 
 **🎯 Supported versions:**
 
-| N1 2026.10 Alpha13 | N1 2026.11 PreRelease 1 |
-| :---: | :---: |
+| N1 2026.10 Alpha13 | N1 2026.11 PreRelease 1 | N1 2026.11 PreRelease 2 |
+| :---: | :---: | :---: |
 
 | 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
 |----------|----------------|-----------|
-| [Unlock Scene N1](#unlock-scene-n1) | Unlocks Scene N1: the license state parser is forced to a perpetual success (expiry 3089-12-31), the activation code type is reported as perpetual, and the APK signature MD5 the app reports to omarea's activation binding is spoofed to the original signing key so re-signed builds still match. |  |
+| [Unlock Scene N1](#unlock-scene-n1) | Unlocks Scene N1: the license state parser is forced to a perpetual success (configurable expiry), the activation code type is reported as perpetual, and the APK signature MD5 the app reports to omarea's activation binding is spoofed to the original signing key so re-signed builds still match. | • License expiry date |
 
 </details>
 
