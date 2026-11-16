@@ -1,3 +1,9 @@
+## [1.2.4](https://github.com/0x11DFE/waypoint-morphe-patches/compare/v1.2.3...v1.2.4) (2026-11-16)
+
+### Bug Fixes
+
+* package-scope the three patches to Waypoint 1.10.1 so it lists in the Morphe catalog ([ddc48fd](https://github.com/0x11DFE/waypoint-morphe-patches/commit/ddc48fd393f026f3eafbe1d152fd018fc8b60243))
+
 ## [1.2.3](https://github.com/0x11DFE/waypoint-morphe-patches/compare/v1.2.2...v1.2.3) (2026-11-16)
 
 ### Bug Fixes
