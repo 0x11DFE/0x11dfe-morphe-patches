@@ -1,0 +1,41 @@
+package app.fluffy.patches.scene
+
+import app.morphe.patcher.Fingerprint
+
+/**
+ * La/c3;-equivalent: parses the stored license state ("success@<millis>", "expired",
+ * ...) into an ActivatedStateModel. Located by signature, not name: the class is
+ * obfuscated and its helpers get renamed by R8 on every build, but the parser is
+ * the only method turning a String into an ActivatedStateModel while mentioning
+ * "success@" and formatting an expiry date.
+ */
+object LicenseStateParserFingerprint : Fingerprint(
+    returnType = "Lcom/omarea/model/ActivatedStateModel;",
+    parameters = listOf("Ljava/lang/String;"),
+    strings = listOf("success@", "yyyy-MM-dd"),
+)
+
+/**
+ * Signature-MD5 getter (at1.C / rv1.B / mw1.B across builds): the only method
+ * taking (Context, String) and returning a String that mentions "MD5" - it
+ * digests the APK signing certificate that omarea's activation server binds to.
+ */
+object SignatureMd5Fingerprint : Fingerprint(
+    returnType = "Ljava/lang/String;",
+    parameters = listOf("Landroid/content/Context;", "Ljava/lang/String;"),
+    strings = listOf("MD5"),
+)
+
+/**
+ * Device-ID getter (at.a / tt.a / nu.a across builds): returns the processed
+ * "random_id2" stored at first launch. Declaring classes change name per build
+ * but always keep the static LinkedHashMap cache field the getter reads, which
+ * no other random_id2-referencing class has.
+ */
+object DeviceIdGetterFingerprint : Fingerprint(
+    returnType = "Ljava/lang/String;",
+    strings = listOf("random_id2"),
+    custom = { _, classDef ->
+        classDef.fields.any { it.type == "Ljava/util/LinkedHashMap;" }
+    },
+)

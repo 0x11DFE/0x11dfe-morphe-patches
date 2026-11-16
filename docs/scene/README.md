@@ -6,11 +6,16 @@ The known "Scene N1" mod for `N1 2026.10 Alpha13` edits exactly three methods in
 `classes.dex` (verified by dex-diffing the mod against the original; no methods
 added or removed):
 
-| Purpose | 2026.10 Alpha13 | 2026.11 PreRelease 1 | 2026.11 PreRelease 2 |
-|---|---|---|---|
-| License state parser | `La/c3;->b(Ljava/lang/String;)Lcom/omarea/model/ActivatedStateModel;` | same | same |
-| License type from activation response | `Lcom/omarea/model/ActivationCodeResponse;->getType()Ljava/lang/String;` | unchanged | unchanged |
-| MD5 of APK signing cert (server-side activation binding) | `La/at1;->C(...)Ljava/lang/String;` | `La/rv1;->B(...)` | `La/mw1;->B(...)` |
+| Purpose | How it is located | Name history (2026.10 -> 2026.11 PR1 -> PR2) |
+|---|---|---|
+| License state parser | fingerprint: `(String)ActivatedStateModel` + strings `success@`, `yyyy-MM-dd` | `c3.b` in all builds |
+| License type from activation response | direct target (not obfuscated) | `ActivationCodeResponse.getType()` in all builds |
+| MD5 of APK signing cert (server-side activation binding) | fingerprint: `(Context, String)String` + string `MD5` | `at1.C` -> `rv1.B` -> `mw1.B` |
+| Device ID getter | fingerprint: `()String` + string `random_id2` + declaring class has a static `LinkedHashMap` field | `at.a` -> `tt.a` -> `nu.a` |
+
+Obfuscated classes are located by [fingerprints](https://github.com/MorpheApp/morphe-patcher/blob/main/docs/2_2_1_fingerprinting.md)
+(method signature + embedded strings + class shape), so R8 renames between builds do not
+require patch changes - only the new `versionName` has to be pinned in `Constants.kt`.
 
 Obfuscated-helper renames across builds:
 
@@ -44,11 +49,11 @@ all three builds.
 
 ## Updating to a new Scene build
 
-1. Check the three targets above still exist (names may shift again - locate
-   `c3` via its `"success@"` string, the MD5 helper via `"MD5"` + `getPackageInfo`).
-2. Verify `c3.b` still starts with the three-instruction state load.
-3. Add the new `versionName` to `COMPATIBILITY_SCENE` in `shared/Constants.kt`
-   and the renamed MD5 helper (if any) to the candidate list in the patch.
+1. Add the new `versionName` to `COMPATIBILITY_SCENE` in `shared/Constants.kt`.
+2. If the release fails to patch: verify the license state parser still starts
+   with the three-instruction state load (`this.b.toString()`), and that the
+   fingerprinted strings (`success@`, `yyyy-MM-dd`, `MD5`, `random_id2`) still
+   appear in the expected methods.
 
 ## APK downloads
 
