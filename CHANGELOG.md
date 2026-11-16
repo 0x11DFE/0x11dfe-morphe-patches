@@ -1,3 +1,9 @@
+## [1.6.0](https://github.com/0x11DFE/morphe-patches/compare/v1.5.0...v1.6.0) (2026-11-16)
+
+### New Features
+
+* split random device ID into a standalone Scene patch ([f1674f1](https://github.com/0x11DFE/morphe-patches/commit/f1674f114f25cbe07453e9d86d92120e11048a69))
+
 ## [1.5.0](https://github.com/0x11DFE/morphe-patches/compare/v1.4.0...v1.5.0) (2026-11-16)
 
 ### New Features

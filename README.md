@@ -54,7 +54,7 @@ upsell buttons elsewhere also just return to the app, consistent with an unlocke
 ## Patches list
 
 <!-- PATCHES_START EXPANDED -->
-> **[v1.5.0](https://github.com/0x11DFE/morphe-patches/releases/tag/v1.5.0)**&nbsp;&nbsp;•&nbsp;&nbsp;`main`&nbsp;&nbsp;•&nbsp;&nbsp;4 patches total
+> **[v1.6.0](https://github.com/0x11DFE/morphe-patches/releases/tag/v1.6.0)**&nbsp;&nbsp;•&nbsp;&nbsp;`main`&nbsp;&nbsp;•&nbsp;&nbsp;5 patches total
 <details open>
 <summary>📦 Waypoint&nbsp;&nbsp;•&nbsp;&nbsp;3 patches</summary>
 <br>
@@ -75,7 +75,7 @@ upsell buttons elsewhere also just return to the app, consistent with an unlocke
 </details>
 
 <details open>
-<summary>📦 Scene&nbsp;&nbsp;•&nbsp;&nbsp;1 patch</summary>
+<summary>📦 Scene&nbsp;&nbsp;•&nbsp;&nbsp;2 patches</summary>
 <br>
 
 **Package name:** `com.omarea.vtools`
@@ -87,7 +87,8 @@ upsell buttons elsewhere also just return to the app, consistent with an unlocke
 
 | 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
 |----------|----------------|-----------|
-| [Unlock Scene N1](#unlock-scene-n1) | Unlocks Scene N1: the license state parser is forced to a perpetual success (configurable expiry), the activation code type is reported as perpetual, and the APK signature MD5 the app reports to omarea's activation binding is spoofed to the original signing key so re-signed builds still match. Optional: report a fresh random device ID instead of the stored one. | • License expiry date<br>• Random device ID |
+| [Random device ID](#random-device-id) | Reports a fresh random device ID (UUID) on every activation request instead of the ID the app generated and stored at first launch. omarea's activation server sees a new device each time. |  |
+| [Unlock Scene N1](#unlock-scene-n1) | Unlocks Scene N1: the license state parser is forced to a perpetual success (configurable expiry), the activation code type is reported as perpetual, and the APK signature MD5 the app reports to omarea's activation binding is spoofed to the original signing key so re-signed builds still match. | • License expiry date |
 
 </details>
 
