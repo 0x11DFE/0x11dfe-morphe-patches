@@ -1,3 +1,9 @@
+## [1.8.0](https://github.com/0x11DFE/morphe-patches/compare/v1.7.1...v1.8.0) (2026-11-16)
+
+### New Features
+
+* build spoofed constants at runtime from random fragments ([3c0098f](https://github.com/0x11DFE/morphe-patches/commit/3c0098f7272fcb9410f9b43102b85d967359e1b3))
+
 ## [1.7.1](https://github.com/0x11DFE/morphe-patches/compare/v1.7.0...v1.7.1) (2026-11-16)
 
 ### Bug Fixes
