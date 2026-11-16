@@ -1,3 +1,9 @@
+## [1.9.1](https://github.com/0x11DFE/morphe-patches/compare/v1.9.0...v1.9.1) (2026-11-16)
+
+### Bug Fixes
+
+* stub activation request so identity changes cannot pop the trial-expired dialog ([b64702b](https://github.com/0x11DFE/morphe-patches/commit/b64702b7c3ea9b5cdd384dcaabb737e03cf5f77d))
+
 ## [1.9.0](https://github.com/0x11DFE/morphe-patches/compare/v1.8.0...v1.9.0) (2026-11-16)
 
 ### New Features

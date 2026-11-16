@@ -1,6 +1,6 @@
 {
   "NOTE": "Do NOT manually edit this file. This file is automatically updated when semantic release (release.yml) runs. Manually editing this file can break your releases and break third party tools that use this file.",
-  "version": "1.9.0",
+  "version": "1.9.1",
   "patches": [
     {
       "name": "Disable PairIP license check",
@@ -96,7 +96,7 @@
     },
     {
       "name": "Unlock Scene N1",
-      "description": "Unlocks Scene N1: the license state parser is forced to a perpetual success (configurable expiry), the activation code type is reported as perpetual, and the APK signature MD5 the app reports to omarea's activation binding is spoofed to the original signing key so re-signed builds still match.",
+      "description": "Unlocks Scene N1: the license state parser and the activation request are forced to a perpetual success (configurable expiry), the activation code type is reported as perpetual, and the APK signature MD5 the app reports to omarea's activation binding is spoofed to the original signing key so re-signed builds still match.",
       "default": true,
       "dependencies": [],
       "compatiblePackages": [
