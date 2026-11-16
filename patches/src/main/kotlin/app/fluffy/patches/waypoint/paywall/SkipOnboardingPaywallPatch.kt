@@ -1,5 +1,6 @@
 package app.fluffy.patches.waypoint.paywall
 
+import app.fluffy.patches.shared.Constants.COMPATIBILITY_WAYPOINT
 import app.morphe.patcher.patch.PatchException
 import app.morphe.patcher.patch.rawResourcePatch
 import java.security.MessageDigest
@@ -7,9 +8,10 @@ import java.security.MessageDigest
 @Suppress("unused")
 val skipOnboardingPaywallPatch = rawResourcePatch(
     name = "Skip Waypoint onboarding paywall",
-    default = false,
-    description = "The paywall screen shown after the Waypoint tutorial immediately invokes the app's own free-choice handler (completeOnboarding + navigate home) and renders nothing. Not version-pinned: matches the PaywallScreen bytecode pattern and fails cleanly when the app is rebuilt.",
+    description = "The paywall screen shown after the Waypoint tutorial immediately invokes the app's own free-choice handler (completeOnboarding + navigate home) and renders nothing. Matches the PaywallScreen bytecode pattern and fails cleanly when the app is rebuilt.",
 ) {
+    compatibleWith(COMPATIBILITY_WAYPOINT)
+
     execute {
         val bundle = get("assets/index.android.bundle")
             ?: throw PatchException("assets/index.android.bundle not found in APK")
