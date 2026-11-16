@@ -93,7 +93,15 @@ def anchor(name):
     return re.sub(r"-+", "-", re.sub(r"[^a-z0-9]+", "-", name.lower())).strip("-")
 
 
-def patches_table(patches):
+# Packages with a per-app doc page; patch names in the table link there instead
+# of to an anchor in this README (the details no longer live in the README).
+DOC_LINKS = {
+    "com.greycastel.waypoint": "docs/waypoint/README.md",
+    "com.omarea.vtools": "docs/scene/README.md",
+}
+
+
+def patches_table(patches, package=None):
     """Render a sorted markdown table of patches with name, description, and options."""
     rows = [
         "| 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |",
@@ -101,6 +109,8 @@ def patches_table(patches):
     ]
     for p in sorted(patches, key=lambda x: x["name"]):
         a = anchor(p["name"])
+        doc = DOC_LINKS.get(package) if package else None
+        href = f"{doc}#{a}" if doc else f"#{a}"
         options = p.get("options") or []
         if options:
             # Show only option titles as a bullet list
@@ -109,7 +119,7 @@ def patches_table(patches):
         else:
             opts_cell = ""
         desc = (p.get("description") or "").replace("\n", "<br>")
-        rows.append(f"| [{p['name']}](#{a}) | {desc} | {opts_cell} |")
+        rows.append(f"| [{p['name']}]({href}) | {desc} | {opts_cell} |")
     return "\n".join(rows)
 
 
@@ -174,7 +184,7 @@ def build_content(expanded=False):
     for entry in by_pkg.values():
         patches = list(entry["patches"].values())
         label   = f"{entry['emoji']} {entry['name']}"
-        lines.append(spoiler(label, entry["package"], len(patches), entry["targets"], patches_table(patches), expanded))
+        lines.append(spoiler(label, entry["package"], len(patches), entry["targets"], patches_table(patches, entry["package"]), expanded))
         lines.append("")
 
     # Universal patches (no specific app)

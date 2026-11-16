@@ -1,6 +1,30 @@
-# Scene (com.omarea.vtools) - Unlock N1
+# Scene (com.omarea.vtools)
 
-## What the unlock replicates
+omarea's device toolbox. The "Scene N1" license is enforced client-side with a
+root daemon and an activation server. Supported versions: N1 2026.10 Alpha13,
+N1 2026.11 PreRelease 1, N1 2026.11 PreRelease 2.
+APK downloads: [download.omarea.com](https://download.omarea.com/#/platform)
+and the [omarea mirror](https://omarea.lanzout.com/b0he4yszi).
+
+## Unlock Scene N1
+
+Forces the license state parser and the activation request to a perpetual success
+with a configurable expiry date (option `expiry-date`, default 2077-01-01, shown by
+the app as the date only). The activation code type is reported as `perpetual`, and
+the APK signature MD5 the app reports to omarea's activation binding is spoofed to
+the original signing key, so re-signed builds still match. The expiry timestamp and
+the signature constant are baked at patch time with a random time-of-day and random
+string fragments, so no two patched builds share a constant.
+
+## Random device ID
+
+Off by default. Replaces the device SN (serial_id / serial_no / cpu_id / gid read
+by the root scene-daemon) with a random 16-char hex value everywhere the app itself
+uses it: the user page display and the SN-keyed cloud sync and API calls to omarea.
+The SN is baked per patch run. The daemon's own server report during a real code
+activation is native code and is not affected.
+
+## Technical reference: what the unlock replicates
 
 The known "Scene N1" mod for `N1 2026.10 Alpha13` edits exactly three methods in
 `classes.dex` (verified by dex-diffing the mod against the original; no methods
