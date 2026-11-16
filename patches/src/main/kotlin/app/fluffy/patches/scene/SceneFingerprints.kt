@@ -24,6 +24,12 @@ object SignatureMd5Fingerprint : Fingerprint(
     returnType = "Ljava/lang/String;",
     parameters = listOf("Landroid/content/Context;", "Ljava/lang/String;"),
     strings = listOf("MD5"),
+    // A kr-script cache helper shares the signature and the "MD5" string (it
+    // hashes script text for a cache filename); only the license-bound getter
+    // also asks the PackageManager for the APK signatures.
+    filters = listOf(
+        methodCall(definingClass = "Landroid/content/pm/PackageManager;", name = "getPackageInfo"),
+    ),
 )
 
 /**
