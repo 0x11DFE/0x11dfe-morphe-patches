@@ -6,6 +6,7 @@ import app.fluffy.patches.waypoint.ensureRegisters
 import app.morphe.patcher.extensions.InstructionExtensions.addInstructions
 import app.morphe.patcher.extensions.InstructionExtensions.removeInstructions
 import app.morphe.patcher.patch.PatchException
+import app.morphe.patcher.patch.booleanOption
 import app.morphe.patcher.patch.bytecodePatch
 import app.morphe.patcher.patch.stringOption
 import java.time.LocalDate
@@ -17,15 +18,17 @@ val unlockSceneProPatch = bytecodePatch(
     description = "Unlocks Scene N1: the license state parser is forced to a perpetual " +
         "success (configurable expiry), the activation code type is reported as perpetual, " +
         "and the APK signature MD5 the app reports to omarea's activation binding is " +
-        "spoofed to the original signing key so re-signed builds still match.",
+        "spoofed to the original signing key so re-signed builds still match. Optional: " +
+        "report a fresh random device ID instead of the stored one.",
 ) {
     compatibleWith(COMPATIBILITY_SCENE)
 
     val expiryDate by stringOption(
         key = "expiry-date",
-        default = "3089-12-31",
+        default = "2077-01-01",
         values = mapOf(
-            "3089-12-31" to "Far future (default)",
+            "2077-01-01" to "2077 (default)",
+            "3089-12-31" to "Far future",
             "2100-01-01" to "Year 2100",
             "2030-01-01" to "Year 2030",
         ),
@@ -34,6 +37,14 @@ val unlockSceneProPatch = bytecodePatch(
             "The app shows it on the user page; anything in the future keeps Pro active.",
         required = true,
         validator = { it != null && runCatching { LocalDate.parse(it) }.isSuccess },
+    )
+
+    val randomDeviceId by booleanOption(
+        key = "random-device-id",
+        default = false,
+        title = "Random device ID",
+        description = "Report a fresh random device ID on every request instead of the " +
+            "ID stored at first launch. The activation server sees a new device each time.",
     )
 
     execute {
@@ -85,6 +96,36 @@ val unlockSceneProPatch = bytecodePatch(
             clearBody()
             ensureRegisters(2)
             addInstructions(0, "const-string v0, \"34ea0e93b18c7df94decd663857bb3bf\"\nreturn-object v0")
+        }
+
+        // Optional: fresh random device ID. The holder class that owns the stored
+        // ID was renamed between builds: at (2026.10) -> tt (2026.11 PR1) -> nu
+        // (2026.11 PR2); its a()Ljava/lang/String; reads/caches the processed ID
+        // and toString() (what the activation requests carry) delegates to it.
+        if (randomDeviceId) {
+            val deviceIdMethod = listOf("La/at;", "La/tt;", "La/nu;")
+                .firstNotNullOfOrNull { className ->
+                    runCatching { mutableClassDefBy(className) }.getOrNull()?.methods?.firstOrNull {
+                        it.name == "a" && it.parameterTypes.isEmpty() &&
+                            it.returnType == "Ljava/lang/String;"
+                    }
+                } ?: throw PatchException(
+                    "Scene device ID getter not found (tried at.a, tt.a, nu.a)"
+                )
+            deviceIdMethod.apply {
+                clearBody()
+                ensureRegisters(2)
+                addInstructions(
+                    0,
+                    """
+                        invoke-static {}, Ljava/util/UUID;->randomUUID()Ljava/util/UUID;
+                        move-result-object v0
+                        invoke-virtual {v0}, Ljava/util/UUID;->toString()Ljava/lang/String;
+                        move-result-object v0
+                        return-object v0
+                    """,
+                )
+            }
         }
     }
 }

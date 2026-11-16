@@ -30,8 +30,11 @@ all three builds.
   replaces them with `const-string v0, "success@<millis>"` so every caller gets
   `activated = true`. `c3.c()` (the v2 flow reading `activate_v2_type` from prefs)
   delegates to `b()`, so it is covered too.
-- The `expiry-date` patch option (yyyy-MM-dd, default 3089-12-31) is converted to
+- The `expiry-date` patch option (yyyy-MM-dd, default 2077-01-01) is converted to
   epoch milliseconds at patch time and baked into that constant.
+- The `random-device-id` patch option (default off) rewrites the device-ID holder's
+  `a()Ljava/lang/String;` (class renamed per build: `at` -> `tt` -> `nu`) to return
+  `UUID.randomUUID().toString()`, so activation requests carry a fresh ID every time.
 - `ActivationCodeResponse.getType()` is forced to `"perpetual"` so any activation
   attempt stores the perpetual license type.
 - The signature-MD5 getter is forced to `"34ea0e93b18c7df94decd663857bb3bf"`
@@ -45,3 +48,8 @@ all three builds.
 2. Verify `c3.b` still starts with the three-instruction state load.
 3. Add the new `versionName` to `COMPATIBILITY_SCENE` in `shared/Constants.kt`
    and the renamed MD5 helper (if any) to the candidate list in the patch.
+
+## APK downloads
+
+- Official: https://download.omarea.com/#/platform
+- Mirror: https://omarea.lanzout.com/b0he4yszi

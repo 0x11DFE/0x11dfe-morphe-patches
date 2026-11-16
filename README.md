@@ -1,8 +1,12 @@
 # 0x11DFE Morphe patches
 
-Patches for use with [Morphe](https://morphe.software) by **0x11DFE**. One app so far,
-more as needed:
+Patches for use with [Morphe](https://morphe.software) by **0x11DFE**:
 
+- **Scene** (`com.omarea.vtools`) - omarea's device toolbox. "Scene N1" license unlock
+  (perpetual, configurable expiry, optional random device ID). Supported versions:
+  **N1 2026.10 Alpha13**, **N1 2026.11 PreRelease 1**, **N1 2026.11 PreRelease 2**.
+  APK downloads: [download.omarea.com](https://download.omarea.com/#/platform) -
+  [omarea mirror (lanzou)](https://omarea.lanzout.com/b0he4yszi)
 - **Waypoint** (`com.greycastel.waypoint`) - React Native compass app whose "Waypoint Pro"
   unlock (products `waypoint_lifetime` / `waypoint_monthly` / `waypoint_yearly`, entitlement
   id `Waypoint Pro`) is enforced client-side through RevenueCat (react-native-purchases
@@ -88,6 +92,19 @@ upsell buttons elsewhere also just return to the app, consistent with an unlocke
 </details>
 
 <!-- PATCHES_END -->
+
+## Versioning
+
+Releases are versioned automatically from conventional commits:
+
+| Commit type | Version bump |
+|---|---|
+| `feat:` | minor (new patch, app or option) |
+| `fix:`, `bump:`, `perf:` | patch |
+| `BREAKING CHANGE:` / `feat!:` / `fix!:` | major |
+
+Anything else (`chore:`, `docs:`, ...) does not cut a release. The full rules live in
+`.releaserc`.
 
 ## Update policy
 
