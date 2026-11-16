@@ -4,11 +4,11 @@ import app.morphe.patcher.Fingerprint
 import app.morphe.patcher.methodCall
 
 /**
- * La/c3;-equivalent: parses the stored license state ("success@<millis>", "expired",
- * ...) into an ActivatedStateModel. Located by signature, not name: the class is
- * obfuscated and its helpers get renamed by R8 on every build, but the parser is
- * the only method turning a String into an ActivatedStateModel while mentioning
- * "success@" and formatting an expiry date.
+ * La/c3;-equivalent: parses the stored license state ("success@<millis>",
+ * "expired", ...) into an ActivatedStateModel. Located by signature, not name:
+ * the class is obfuscated and its helpers get renamed by R8 on every build, but
+ * the parser is the only method turning a String into an ActivatedStateModel
+ * while mentioning "success@" and formatting an expiry date.
  */
 object LicenseStateParserFingerprint : Fingerprint(
     returnType = "Lcom/omarea/model/ActivatedStateModel;",
@@ -19,7 +19,8 @@ object LicenseStateParserFingerprint : Fingerprint(
 /**
  * Signature-MD5 getter (at1.C / rv1.B / mw1.B across builds): the only method
  * taking (Context, String) and returning a String that mentions "MD5" - it
- * digests the APK signing certificate that omarea's activation server binds to.
+ * digests the APK signing certificate that omarea's activation server binds
+ * to.
  */
 object SignatureMd5Fingerprint : Fingerprint(
     returnType = "Ljava/lang/String;",
@@ -34,15 +35,12 @@ object SignatureMd5Fingerprint : Fingerprint(
 )
 
 /**
- * Device-ID getter (at.a / tt.a / nu.a across builds): returns the processed
- * "random_id2" stored at first launch. Declaring classes change name per build
- * but always keep the static LinkedHashMap cache field the getter reads, which
- * no other random_id2-referencing class has.
+ * Device-ID collector (mh1.f / r81.f / l91.f across builds): queries the root
+ * scene-daemon over the local socket for "device-id" (serial_id / serial_no /
+ * cpu_id / gid - first non-empty wins). Its return value is the SN shown on
+ * the user page and the key the app sends to omarea's API for cloud sync.
  */
-object DeviceIdGetterFingerprint : Fingerprint(
+object DeviceIdCollectorFingerprint : Fingerprint(
     returnType = "Ljava/lang/String;",
-    strings = listOf("random_id2"),
-    custom = { _, classDef ->
-        classDef.fields.any { it.type == "Ljava/util/LinkedHashMap;" }
-    },
+    strings = listOf("device-id", "serial_id", "serial_no", "cpu_id", "gid"),
 )
