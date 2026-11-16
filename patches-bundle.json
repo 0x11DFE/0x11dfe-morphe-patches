@@ -1,7 +1,7 @@
 {
-  "created_at": "2026-11-16T20:42:48",
-  "description": "## [1.8.0](https://github.com/0x11DFE/morphe-patches/compare/v1.7.1...v1.8.0) (2026-11-16)\n\n### New Features\n\n* build spoofed constants at runtime from random fragments ([3c0098f](https://github.com/0x11DFE/morphe-patches/commit/3c0098f7272fcb9410f9b43102b85d967359e1b3))",
-  "download_url": "https://github.com/0x11DFE/morphe-patches/releases/download/v1.8.0/patches-1.8.0.mpp",
+  "created_at": "2026-11-16T21:16:50",
+  "description": "## [1.9.0](https://github.com/0x11DFE/morphe-patches/compare/v1.8.0...v1.9.0) (2026-11-16)\n\n### New Features\n\n* spoof device SN at the collector, jitter expiry timestamp ([d6ef093](https://github.com/0x11DFE/morphe-patches/commit/d6ef0932a7b6ac3ce5381fc03bf9ec1255c6293d))",
+  "download_url": "https://github.com/0x11DFE/morphe-patches/releases/download/v1.9.0/patches-1.9.0.mpp",
   "signature_download_url": "",
-  "version": "1.8.0"
+  "version": "1.9.0"
 }

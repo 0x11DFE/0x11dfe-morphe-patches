@@ -54,7 +54,7 @@ upsell buttons elsewhere also just return to the app, consistent with an unlocke
 ## Patches list
 
 <!-- PATCHES_START EXPANDED -->
-> **[v1.8.0](https://github.com/0x11DFE/morphe-patches/releases/tag/v1.8.0)**&nbsp;&nbsp;•&nbsp;&nbsp;`main`&nbsp;&nbsp;•&nbsp;&nbsp;5 patches total
+> **[v1.9.0](https://github.com/0x11DFE/morphe-patches/releases/tag/v1.9.0)**&nbsp;&nbsp;•&nbsp;&nbsp;`main`&nbsp;&nbsp;•&nbsp;&nbsp;5 patches total
 <details open>
 <summary>📦 Waypoint&nbsp;&nbsp;•&nbsp;&nbsp;3 patches</summary>
 <br>
@@ -87,7 +87,7 @@ upsell buttons elsewhere also just return to the app, consistent with an unlocke
 
 | 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
 |----------|----------------|-----------|
-| [Random device ID](#random-device-id) | Reports a fresh random device ID (UUID) on every activation request instead of the ID the app generated and stored at first launch. omarea's activation server sees a new device each time. |  |
+| [Random device ID](#random-device-id) | Replaces the device SN (serial_id/serial_no/cpu_id/gid read by the root scene-daemon) with a random one everywhere the app itself uses it: the user page display and the SN-keyed cloud sync / API calls to omarea. The SN is baked per patch run. The daemon's own server report during real code activation is native and not affected. |  |
 | [Unlock Scene N1](#unlock-scene-n1) | Unlocks Scene N1: the license state parser is forced to a perpetual success (configurable expiry), the activation code type is reported as perpetual, and the APK signature MD5 the app reports to omarea's activation binding is spoofed to the original signing key so re-signed builds still match. | • License expiry date |
 
 </details>

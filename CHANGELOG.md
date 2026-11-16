@@ -1,3 +1,9 @@
+## [1.9.0](https://github.com/0x11DFE/morphe-patches/compare/v1.8.0...v1.9.0) (2026-11-16)
+
+### New Features
+
+* spoof device SN at the collector, jitter expiry timestamp ([d6ef093](https://github.com/0x11DFE/morphe-patches/commit/d6ef0932a7b6ac3ce5381fc03bf9ec1255c6293d))
+
 ## [1.8.0](https://github.com/0x11DFE/morphe-patches/compare/v1.7.1...v1.8.0) (2026-11-16)
 
 ### New Features
