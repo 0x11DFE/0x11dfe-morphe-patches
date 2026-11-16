@@ -1,3 +1,9 @@
+## [1.2.2](https://github.com/0x11DFE/waypoint-morphe-patches/compare/v1.2.1...v1.2.2) (2026-11-16)
+
+### Bug Fixes
+
+* migrate to official Morphe semantic-release pipeline ([fc639fd](https://github.com/0x11DFE/waypoint-morphe-patches/commit/fc639fd84b0361f2ec6d68d467bf2fe61c43d6d6))
+
 # Changelog
 
 ## 1.2.1
