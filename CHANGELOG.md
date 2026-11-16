@@ -1,3 +1,9 @@
+## [1.7.0](https://github.com/0x11DFE/morphe-patches/compare/v1.6.0...v1.7.0) (2026-11-16)
+
+### New Features
+
+* locate obfuscated Scene targets by fingerprint instead of class names ([66a283e](https://github.com/0x11DFE/morphe-patches/commit/66a283e2dc0ae0f93328c7b9f132939582032229))
+
 ## [1.6.0](https://github.com/0x11DFE/morphe-patches/compare/v1.5.0...v1.6.0) (2026-11-16)
 
 ### New Features
