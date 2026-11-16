@@ -38,6 +38,16 @@ persisted by the app (no redirect loop), and the screen never appears. The patch
 24-byte window unique to this build and fails loudly if the bundle changed. Note: upgrade
 upsell buttons elsewhere also just return to the app, consistent with an unlocked build.
 
+## Update policy (v1.2.0+)
+
+Patches are NOT version-pinned: they are offered for any APK and fail loudly when a
+target is missing. After a Waypoint update:
+- PairIP and RevenueCat patches usually keep working unchanged.
+- For the bundle patch run `scripts/derive-paywall-pattern.py` on the new
+  `assets/index.android.bundle` (needs `pip install hermes-dec`) and paste the printed
+  `pattern` into `SkipOnboardingPaywallPatch.kt`.
+To restore strict version gating, re-add `compatibleWith(COMPATIBILITY_WAYPOINT)`.
+
 ## Known limits (server-side, not unlockable locally)
 
 - The MapLibre maps token worker (`waypoint-maps-token.pyerschris.workers.dev`) rejects

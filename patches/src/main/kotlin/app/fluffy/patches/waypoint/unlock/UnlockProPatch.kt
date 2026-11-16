@@ -1,6 +1,5 @@
 package app.fluffy.patches.waypoint.unlock
 
-import app.fluffy.patches.shared.Constants.COMPATIBILITY_WAYPOINT
 import app.fluffy.patches.waypoint.clearBody
 import app.fluffy.patches.waypoint.ensureRegisters
 import app.morphe.patcher.extensions.InstructionExtensions.addInstructions
@@ -11,8 +10,6 @@ val unlockProPatch = bytecodePatch(
     name = "Unlock Waypoint Pro",
     description = "Resolves the RN bridge getCustomerInfo promise with a fabricated CustomerInfo carrying an active lifetime 'Waypoint Pro' entitlement (product waypoint_lifetime), and injects the same entitlement into the hybridcommon mapper. Works even when api.revenuecat.com is unreachable.",
 ) {
-    compatibleWith(COMPATIBILITY_WAYPOINT)
-
     execute {
         // Primary: instant-resolve the bridge promise the JS SDK calls at startup.
         // Original body is 2 registers (p0/p1); the replacement needs v0-v5 + p0/p1.
