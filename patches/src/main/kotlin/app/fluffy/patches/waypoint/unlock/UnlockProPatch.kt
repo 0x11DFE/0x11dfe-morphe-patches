@@ -8,6 +8,7 @@ import app.morphe.patcher.patch.bytecodePatch
 @Suppress("unused")
 val unlockProPatch = bytecodePatch(
     name = "Unlock Waypoint Pro",
+    default = false,
     description = "Resolves the RN bridge getCustomerInfo promise with a fabricated CustomerInfo carrying an active lifetime 'Waypoint Pro' entitlement (product waypoint_lifetime), and injects the same entitlement into the hybridcommon mapper. Works even when api.revenuecat.com is unreachable.",
 ) {
     execute {

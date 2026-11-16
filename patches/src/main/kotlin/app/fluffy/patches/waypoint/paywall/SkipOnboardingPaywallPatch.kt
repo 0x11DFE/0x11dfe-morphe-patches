@@ -7,6 +7,7 @@ import java.security.MessageDigest
 @Suppress("unused")
 val skipOnboardingPaywallPatch = rawResourcePatch(
     name = "Skip Waypoint onboarding paywall",
+    default = false,
     description = "The paywall screen shown after the Waypoint tutorial immediately invokes the app's own free-choice handler (completeOnboarding + navigate home) and renders nothing. Not version-pinned: matches the PaywallScreen bytecode pattern and fails cleanly when the app is rebuilt.",
 ) {
     execute {
