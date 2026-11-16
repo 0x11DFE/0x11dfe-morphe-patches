@@ -54,11 +54,13 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/v')
         run: |
           VERSION=${GITHUB_REF_NAME#v}
+          MPP=$(cd patches/build/libs && ls patches*.mpp | grep -vE -- '-(sources|javadoc)\.mpp$' | head -1)
+          if [ -z "$MPP" ]; then echo "no main .mpp artifact found"; exit 1; fi
           cat > patches-bundle.json <<JSON
           {
             "created_at": "$(date -u +%Y-%m-%dT%H:%M:%S)",
             "description": "Waypoint patches ${GITHUB_REF_NAME}",
-            "download_url": "https://github.com/${GITHUB_REPOSITORY}/releases/download/${GITHUB_REF_NAME}/patches-${VERSION}.mpp",
+            "download_url": "https://github.com/${GITHUB_REPOSITORY}/releases/download/${GITHUB_REF_NAME}/${MPP}",
             "signature_download_url": "",
             "version": "${VERSION}"
           }
