@@ -29,6 +29,15 @@ Empties `com.pairip.licensecheck.LicenseClient.checkLicense(Context)` (tries the
 `licensecheck3` package variant as a fallback). Without this, PairIP kills a re-signed
 APK. No `assets/pairipcore` VM layer exists in this app.
 
+### Skip onboarding paywall
+Patches `assets/index.android.bundle` (Hermes bytecode): the `/(onboarding)/paywall` route
+component runs its env setup (router, `completeOnboarding` store action), then - instead of
+rendering the PaywallSheet - invokes the app's own free-choice handler and returns null.
+Effect: tutorial finishes straight into the app, `hasCompletedOnboarding` is genuinely
+persisted by the app (no redirect loop), and the screen never appears. The patch matches a
+24-byte window unique to this build and fails loudly if the bundle changed. Note: upgrade
+upsell buttons elsewhere also just return to the app, consistent with an unlocked build.
+
 ## Known limits (server-side, not unlockable locally)
 
 - The MapLibre maps token worker (`waypoint-maps-token.pyerschris.workers.dev`) rejects
