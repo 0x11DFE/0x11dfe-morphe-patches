@@ -47,4 +47,24 @@ jobs:
           files: |
             patches/build/libs/*.mpp
             patches-list.json
-            patches-bundle.json
+
+      # Morphe Manager resolves a source by fetching patches-bundle.json from the
+      # default branch root, so keep it committed and pointed at the new release.
+      - name: Commit bundle metadata to main
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: |
+          VERSION=${GITHUB_REF_NAME#v}
+          cat > patches-bundle.json <<JSON
+          {
+            "created_at": "$(date -u +%Y-%m-%dT%H:%M:%S)",
+            "description": "Waypoint patches ${GITHUB_REF_NAME}",
+            "download_url": "https://github.com/${GITHUB_REPOSITORY}/releases/download/${GITHUB_REF_NAME}/patches-${VERSION}.mpp",
+            "signature_download_url": "",
+            "version": "${VERSION}"
+          }
+          JSON
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add patches-bundle.json patches-list.json
+          git commit -m "chore: bundle metadata for ${GITHUB_REF_NAME} [skip ci]" || true
+          git push origin HEAD:main
