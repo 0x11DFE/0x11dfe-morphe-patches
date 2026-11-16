@@ -1,6 +1,6 @@
 {
   "NOTE": "Do NOT manually edit this file. This file is automatically updated when semantic release (release.yml) runs. Manually editing this file can break your releases and break third party tools that use this file.",
-  "version": "1.2.4",
+  "version": "1.3.0",
   "patches": [
     {
       "name": "Disable PairIP license check",
@@ -44,6 +44,39 @@
           "targets": [
             {
               "version": "1.10.1",
+              "versionCodes": null,
+              "isExperimental": false,
+              "minSdk": null,
+              "description": null
+            }
+          ]
+        }
+      ],
+      "options": []
+    },
+    {
+      "name": "Unlock Scene N1",
+      "description": "Unlocks Scene N1: the license state parser is forced to a perpetual success (expiry 3089-12-31), the activation code type is reported as perpetual, and the APK signature MD5 the app reports to omarea's activation binding is spoofed to the original signing key so re-signed builds still match.",
+      "default": true,
+      "dependencies": [],
+      "compatiblePackages": [
+        {
+          "packageName": "com.omarea.vtools",
+          "name": "Scene",
+          "description": null,
+          "apkFileType": "APK",
+          "appIconColor": "#00BCD4",
+          "signatures": null,
+          "targets": [
+            {
+              "version": "N1 2026.10 Alpha13",
+              "versionCodes": null,
+              "isExperimental": false,
+              "minSdk": null,
+              "description": null
+            },
+            {
+              "version": "N1 2026.11 PreRelease 1",
               "versionCodes": null,
               "isExperimental": false,
               "minSdk": null,

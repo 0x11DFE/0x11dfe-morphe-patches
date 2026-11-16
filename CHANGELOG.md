@@ -1,3 +1,9 @@
+## [1.3.0](https://github.com/0x11DFE/0x11dfe-morphe-patches/compare/v1.2.4...v1.3.0) (2026-11-16)
+
+### New Features
+
+* add Scene N1 unlock (license state, type and signature spoof) ([a31b694](https://github.com/0x11DFE/0x11dfe-morphe-patches/commit/a31b69480df7f3c7f0b8709e0a4d3f076f27158c))
+
 ## [1.2.4](https://github.com/0x11DFE/waypoint-morphe-patches/compare/v1.2.3...v1.2.4) (2026-11-16)
 
 ### Bug Fixes
