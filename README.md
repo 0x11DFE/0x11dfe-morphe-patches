@@ -1,11 +1,20 @@
-# Waypoint Morphe Patches
+# 0x11DFE Morphe patches
 
-Morphe patch source for **Waypoint** (`com.greycastel.waypoint`) - a React Native compass
-app whose "Waypoint Pro" unlock (products `waypoint_lifetime` / `waypoint_monthly` /
-`waypoint_yearly`, entitlement id `Waypoint Pro`) is enforced client-side through
-RevenueCat (react-native-purchases 9.15.0) and protected by Google Play PairIP.
+Patches for use with [Morphe](https://morphe.software) by **0x11DFE**. One app so far,
+more as needed:
 
-Supported version: **1.10.1** (versionCode 83).
+- **Waypoint** (`com.greycastel.waypoint`) - React Native compass app whose "Waypoint Pro"
+  unlock (products `waypoint_lifetime` / `waypoint_monthly` / `waypoint_yearly`, entitlement
+  id `Waypoint Pro`) is enforced client-side through RevenueCat (react-native-purchases
+  9.15.0) and protected by Google Play PairIP. Supported version: **1.10.1** (versionCode 83).
+
+## Add to Morphe
+
+<a href="https://morphe.software/add-source?github=0x11DFE/0x11dfe-morphe-patches">
+  <img src=".github/assets/add-to-morphe.svg" alt="Add to Morphe" height="48">
+</a>
+
+`https://github.com/0x11DFE/0x11dfe-morphe-patches`
 
 ## Patches
 
@@ -63,22 +72,20 @@ upsell buttons elsewhere also just return to the app, consistent with an unlocke
 
 <!-- PATCHES_END -->
 
-## Update policy (v1.3.0+, semantic-release)
+## Update policy
 
 Releases are automated by semantic-release: push conventional commits to main
 (`feat:` minor, `fix:`/`bump:`/`perf:` patch, `BREAKING CHANGE:` major). Version,
 CHANGELOG, patches-bundle.json, patches-list.json and the patch table above are
 generated and committed automatically - never edit them by hand.
 
-After a Waypoint app update:
-
-Patches are NOT version-pinned: they are offered for any APK and fail loudly when a
-target is missing. After a Waypoint update:
+Patches are version-pinned per app via `AppTarget` in `Constants.kt` (required for the
+app to appear in Morphe's Applications catalog). After a Waypoint app update:
+- Add the new version string to `COMPATIBILITY_WAYPOINT` targets (see Version bumping).
 - PairIP and RevenueCat patches usually keep working unchanged.
 - For the bundle patch run `scripts/derive-paywall-pattern.py` on the new
   `assets/index.android.bundle` (needs `pip install hermes-dec`) and paste the printed
   `pattern` into `SkipOnboardingPaywallPatch.kt`.
-To restore strict version gating, re-add `compatibleWith(COMPATIBILITY_WAYPOINT)`.
 
 Always `git pull --rebase` before pushing: the release bot commits metadata to main.
 
