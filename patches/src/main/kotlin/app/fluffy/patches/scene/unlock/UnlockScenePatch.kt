@@ -102,7 +102,7 @@ val unlockSceneProPatch = bytecodePatch(
         // ID was renamed between builds: at (2026.10) -> tt (2026.11 PR1) -> nu
         // (2026.11 PR2); its a()Ljava/lang/String; reads/caches the processed ID
         // and toString() (what the activation requests carry) delegates to it.
-        if (randomDeviceId) {
+        if (randomDeviceId == true) {
             val deviceIdMethod = listOf("La/at;", "La/tt;", "La/nu;")
                 .firstNotNullOfOrNull { className ->
                     runCatching { mutableClassDefBy(className) }.getOrNull()?.methods?.firstOrNull {
