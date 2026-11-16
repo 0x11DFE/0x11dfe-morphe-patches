@@ -1,5 +1,6 @@
 package app.fluffy.patches.scene.unlock
 
+import app.fluffy.patches.scene.ActivationRequestFingerprint
 import app.fluffy.patches.scene.LicenseStateParserFingerprint
 import app.fluffy.patches.scene.fragmentedStringSmali
 import app.fluffy.patches.scene.SignatureMd5Fingerprint
@@ -18,10 +19,11 @@ import kotlin.random.Random
 @Suppress("unused")
 val unlockSceneProPatch = bytecodePatch(
     name = "Unlock Scene N1",
-    description = "Unlocks Scene N1: the license state parser is forced to a perpetual " +
-        "success (configurable expiry), the activation code type is reported as perpetual, " +
-        "and the APK signature MD5 the app reports to omarea's activation binding is " +
-        "spoofed to the original signing key so re-signed builds still match.",
+    description = "Unlocks Scene N1: the license state parser and the activation request " +
+        "are forced to a perpetual success (configurable expiry), the activation code type " +
+        "is reported as perpetual, and the APK signature MD5 the app reports to omarea's " +
+        "activation binding is spoofed to the original signing key so re-signed builds " +
+        "still match.",
 ) {
     compatibleWith(COMPATIBILITY_SCENE)
 
@@ -70,6 +72,16 @@ val unlockSceneProPatch = bytecodePatch(
             clearBody()
             ensureRegisters(2)
             addInstructions(0, "const-string v0, \"perpetual\"\nreturn-object v0")
+        }
+
+        // The activation-request helper (app -> daemon -> server). Left alone it
+        // can answer "expired"/"not-you" after an identity change and pop the
+        // trial-expired dialog; stubbed here it answers success locally and the
+        // daemon is never asked to activate.
+        ActivationRequestFingerprint.method.apply {
+            clearBody()
+            ensureRegisters(4)
+            addInstructions(0, fragmentedStringSmali("success@$millis", "v0", "v1") + "\nreturn-object v0")
         }
 
         // Signature MD5 of the APK cert (activation binding), located by

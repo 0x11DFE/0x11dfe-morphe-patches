@@ -40,6 +40,12 @@ object SignatureMd5Fingerprint : Fingerprint(
  * cpu_id / gid - first non-empty wins). Its return value is the SN shown on
  * the user page and the key the app sends to omarea's API for cloud sync.
  */
+object ActivationRequestFingerprint : Fingerprint(
+    returnType = "Ljava/lang/String;",
+    parameters = listOf("Ljava/lang/String;"),
+    strings = listOf("activate"),
+)
+
 object DeviceIdCollectorFingerprint : Fingerprint(
     returnType = "Ljava/lang/String;",
     strings = listOf("device-id", "serial_id", "serial_no", "cpu_id", "gid"),
