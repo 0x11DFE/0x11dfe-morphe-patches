@@ -1,3 +1,9 @@
+## [1.12.1](https://github.com/0x11DFE/morphe-patches/compare/v1.12.0...v1.12.1) (2026-11-18)
+
+### Bug Fixes
+
+* **mdproxy:** mirror instruction order in the rewarded-loader fingerprint ([75ef7a1](https://github.com/0x11DFE/morphe-patches/commit/75ef7a137e3f4e3006d5d507f928c146159f8807))
+
 ## [1.12.0](https://github.com/0x11DFE/morphe-patches/compare/v1.11.0...v1.12.0) (2026-11-18)
 
 ### New Features
