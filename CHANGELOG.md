@@ -1,3 +1,10 @@
+## [1.10.1](https://github.com/0x11DFE/morphe-patches/compare/v1.10.0...v1.10.1) (2026-11-18)
+
+### Bug Fixes
+
+* **scene:** build against patcher 2.4.0 so res/Bp is reachable ([35d1a4e](https://github.com/0x11DFE/morphe-patches/commit/35d1a4e59300ddc76ac713a842ce7a4d7d4a7516))
+* **scene:** use resourceFile for the raw res/Bp entry ([ac44c1d](https://github.com/0x11DFE/morphe-patches/commit/ac44c1d9544ebe2563b22686561fd3feeab932de))
+
 ## [1.10.0](https://github.com/0x11DFE/morphe-patches/compare/v1.9.1...v1.10.0) (2026-11-18)
 
 ### New Features
