@@ -24,6 +24,34 @@ uses it: the user page display and the SN-keyed cloud sync and API calls to omar
 The SN is baked per patch run. The daemon's own server report during a real code
 activation is native code and is not affected.
 
+## Unlock optional features
+
+On by default. The tuner's Optional features dialog hides three entries behind
+checks that have nothing to do with whether the feature works on the device:
+
+- **Refresh rate** - shown only when the display API reports a discrete 60Hz
+  mode next to a >60Hz mode. Samsung OneUI panels report their modes through
+  vendor interfaces instead, so the probe fails even though rate control
+  through the root daemon works. The patch makes the support check return
+  true.
+- **FAS in games** - frame-aware scheduling, the in-game FPS control. Gated on
+  a cloud `lp` profile branch with an online config source. The patch makes
+  the availability check return true; the per-game config is local.
+- **CPU limiters** - gated on the config source being Scene Online. The patch
+  removes that visibility branch in the dialog builder.
+
+`Bypass power supply` stays hidden on devices without a supported
+charging-control sysfs node (the toggle would do nothing). All three unlocked
+features were verified on SM-A256E (OneUI, 120Hz panel, fas-rs installed);
+the refresh-rate control is applied by the root daemon.
+
+The patch locates the dialog builder by fingerprint (its `View` onClick shape
+plus the `SOURCE_SCENE_ONLINE` / `CLOUD_PROFILE_BRANCH` literals), derives the
+refresh-rate check from the invoke right before the online-source anchor, and
+neutralizes the limiter gate by tracking the comparison result register to its
+branch - no obfuscated names are hardcoded, so app updates keep working as
+long as the dialog keeps this shape.
+
 ## Daemon gate bypass
 
 On by default. The root scene-daemon serves the app's live stats (dashboard

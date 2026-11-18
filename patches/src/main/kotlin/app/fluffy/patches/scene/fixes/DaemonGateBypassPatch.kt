@@ -18,8 +18,8 @@ import app.morphe.patcher.patch.resourceFile
  * daemon start: it locates the daemon's AES IV string ("scene.omarea.com") in
  * the process's data segment at runtime, derives the two gate bytes relative
  * to it, validates and holds them open (MASTER=1, RESTRICT=0). A background
- * loop re-pokes for 300s to cover the daemon's one-shot 63s license
- * revalidation. A daemon update that shifts the layout fails safe: implausible
+ * loop re-pokes every 10s for as long as the daemon lives, so periodic
+ * license revalidation cannot close the gate. A daemon update that shifts the layout fails safe: implausible
  * byte values abort, and a failed write is restored.
  *
  * Shell text below uses a section sign (\u00A7) in place of every dollar sign,
@@ -101,7 +101,7 @@ mp_gate_poke() {
     MP_P="§(/system/bin/pidof scene-daemon 2>/dev/null | tr -d '\r\n')"
     [ -z "§MP_P" ] && return 0
     # List the daemon's small writable mappings (4KB < size <= 256KB).
-    grep ' rw-p ' /proc/§MP_P/maps 2>/dev/null | while read -r LN; do
+    grep -a ' rw-p ' /proc/§MP_P/maps 2>/dev/null | while read -r LN; do
         R="§(echo "§LN" | cut -d' ' -f1)"
         S="§{R%%-*}"; E="§{R##*-}"
         SZ="§((0x§E - 0x§S))"
@@ -146,8 +146,21 @@ mp_gate_poke() {
     fi
 }
 mp_gate_poke
-# The daemon revalidates its license once, ~63s after start; keep poking
-# for 300s so the gate cannot close. Idempotent if launchers overlap.
-( i=0; while [ "§i" -lt 30 ]; do sleep 10; mp_gate_poke; i="§((i+1))"; done ) &
+# The daemon revalidates its license periodically and can clear the gate
+# flags while it lives - an app update reconnects to the surviving daemon
+# without re-running this launcher. So keep re-poking every 10s for as long
+# as the daemon exists (idempotent when launchers overlap) and exit after
+# ~5 minutes with no daemon.
+( i=0
+  while : ; do
+    sleep 10
+    if [ -n "§(/system/bin/pidof scene-daemon 2>/dev/null)" ]; then
+      mp_gate_poke
+      i=0
+    else
+      i="§((i+1))"
+      [ "§i" -gt 30 ] && break
+    fi
+  done ) &
 # <<< morphe-patches daemon gate poker <<<
 """
