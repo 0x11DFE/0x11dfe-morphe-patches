@@ -23,7 +23,26 @@ are responsible for what you do with it.
 ## Patches list
 
 <!-- PATCHES_START EXPANDED -->
-> **[v1.9.1](https://github.com/0x11DFE/morphe-patches/releases/tag/v1.9.1)**&nbsp;&nbsp;•&nbsp;&nbsp;`main`&nbsp;&nbsp;•&nbsp;&nbsp;5 patches total
+> **[v1.10.0](https://github.com/0x11DFE/morphe-patches/releases/tag/v1.10.0)**&nbsp;&nbsp;•&nbsp;&nbsp;`main`&nbsp;&nbsp;•&nbsp;&nbsp;6 patches total
+<details open>
+<summary>📦 Scene&nbsp;&nbsp;•&nbsp;&nbsp;3 patches</summary>
+<br>
+
+**Package name:** `com.omarea.vtools`
+
+**🎯 Supported versions:**
+
+| N1 2026.10 Alpha13 | N1 2026.11 PreRelease 1 | N1 2026.11 PreRelease 2 |
+| :---: | :---: | :---: |
+
+| 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
+|----------|----------------|-----------|
+| [Daemon gate bypass](docs/scene/README.md#daemon-gate-bypass) | Keeps the root scene-daemon's monitor gate open so live stats (dashboard cards, system/mini/FPS overlays) keep updating instead of freezing ~40s after connect on rooted devices. Patches the daemon launcher script (raw resource "up") to hold two bytes in the running daemon's memory open; unknown daemon layouts fail safe. Requires root (the daemon itself runs as root). |  |
+| [Random device ID](docs/scene/README.md#random-device-id) | Replaces the device SN (serial_id/serial_no/cpu_id/gid read by the root scene-daemon) with a random one everywhere the app itself uses it: the user page display and the SN-keyed cloud sync / API calls to omarea. The SN is baked per patch run. The daemon's own server report during real code activation is native and not affected. |  |
+| [Unlock Scene N1](docs/scene/README.md#unlock-scene-n1) | Unlocks Scene N1: the license state parser and the activation request are forced to a perpetual success (configurable expiry), the activation code type is reported as perpetual, and the APK signature MD5 the app reports to omarea's activation binding is spoofed to the original signing key so re-signed builds still match. | • License expiry date |
+
+</details>
+
 <details open>
 <summary>📦 Waypoint&nbsp;&nbsp;•&nbsp;&nbsp;3 patches</summary>
 <br>
@@ -40,24 +59,6 @@ are responsible for what you do with it.
 | [Disable PairIP license check](docs/waypoint/README.md#disable-pairip-license-check) | Empties com.pairip.licensecheck.LicenseClient.checkLicense so the re-signed patched APK is not killed by Google Play PairIP license enforcement. Generic: works on any PairIP-protected app with this class. |  |
 | [Skip Waypoint onboarding paywall](docs/waypoint/README.md#skip-waypoint-onboarding-paywall) | The paywall screen shown after the Waypoint tutorial immediately invokes the app's own free-choice handler (completeOnboarding + navigate home) and renders nothing. Matches the PaywallScreen bytecode pattern and fails cleanly when the app is rebuilt. |  |
 | [Unlock Waypoint Pro](docs/waypoint/README.md#unlock-waypoint-pro) | Resolves the RN bridge getCustomerInfo promise with a fabricated CustomerInfo carrying an active lifetime 'Waypoint Pro' entitlement (product waypoint_lifetime), and injects the same entitlement into the hybridcommon mapper. Works even when api.revenuecat.com is unreachable. |  |
-
-</details>
-
-<details open>
-<summary>📦 Scene&nbsp;&nbsp;•&nbsp;&nbsp;2 patches</summary>
-<br>
-
-**Package name:** `com.omarea.vtools`
-
-**🎯 Supported versions:**
-
-| N1 2026.10 Alpha13 | N1 2026.11 PreRelease 1 | N1 2026.11 PreRelease 2 |
-| :---: | :---: | :---: |
-
-| 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
-|----------|----------------|-----------|
-| [Random device ID](docs/scene/README.md#random-device-id) | Replaces the device SN (serial_id/serial_no/cpu_id/gid read by the root scene-daemon) with a random one everywhere the app itself uses it: the user page display and the SN-keyed cloud sync / API calls to omarea. The SN is baked per patch run. The daemon's own server report during real code activation is native and not affected. |  |
-| [Unlock Scene N1](docs/scene/README.md#unlock-scene-n1) | Unlocks Scene N1: the license state parser and the activation request are forced to a perpetual success (configurable expiry), the activation code type is reported as perpetual, and the APK signature MD5 the app reports to omarea's activation binding is spoofed to the original signing key so re-signed builds still match. | • License expiry date |
 
 </details>
 

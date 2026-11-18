@@ -1,3 +1,9 @@
+## [1.10.0](https://github.com/0x11DFE/morphe-patches/compare/v1.9.1...v1.10.0) (2026-11-18)
+
+### New Features
+
+* **scene:** add Daemon gate bypass patch ([d76aa8c](https://github.com/0x11DFE/morphe-patches/commit/d76aa8c6c63b0a4a6a2aaaa7c2aa95d60432e6ac))
+
 ## [1.9.1](https://github.com/0x11DFE/morphe-patches/compare/v1.9.0...v1.9.1) (2026-11-16)
 
 ### Bug Fixes
