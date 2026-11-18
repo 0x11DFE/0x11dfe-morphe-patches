@@ -1,3 +1,9 @@
+## [1.10.2](https://github.com/0x11DFE/morphe-patches/compare/v1.10.1...v1.10.2) (2026-11-18)
+
+### Bug Fixes
+
+* align smali pin with patcher 2.4.0 (4220ae75f7) ([905446a](https://github.com/0x11DFE/morphe-patches/commit/905446a1507f2c94e930af4f02e1ab137ace3393))
+
 ## [1.10.1](https://github.com/0x11DFE/morphe-patches/compare/v1.10.0...v1.10.1) (2026-11-18)
 
 ### Bug Fixes
