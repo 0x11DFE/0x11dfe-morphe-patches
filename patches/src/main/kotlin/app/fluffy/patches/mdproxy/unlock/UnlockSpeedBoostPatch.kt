@@ -34,7 +34,7 @@ val unlockSpeedBoostPatch = bytecodePatch(
         fun callsOf(method: com.android.tools.smali.dexlib2.iface.Method) =
             method.implementation!!.instructions
                 .filterIsInstance<ReferenceInstruction>()
-                .map { it.reference as MethodReference }
+                .mapNotNull { it.reference as? MethodReference }
 
         val mmkvGetter = callsOf(original)
             .firstOrNull { it.parameterTypes.isEmpty() && it.returnType == "Lcom/tencent/mmkv/MMKV;" }
