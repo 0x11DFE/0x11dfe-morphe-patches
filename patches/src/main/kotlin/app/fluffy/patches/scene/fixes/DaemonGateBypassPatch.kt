@@ -2,150 +2,151 @@ package app.fluffy.patches.scene.fixes
 
 import app.fluffy.patches.shared.Constants.COMPATIBILITY_SCENE
 import app.morphe.patcher.patch.PatchException
-import app.morphe.patcher.patch.rawResourcePatch
+import app.morphe.patcher.patch.patch
 import app.morphe.patcher.patch.resourceFile
 
 /**
- * The root scene-daemon gates its "adb-monitor-*" ops (the live stats behind the
- * dashboard cards and monitoring overlays) behind a local license check: ~40s
- * after the app connects, a validator flips RESTRICT=1 (root environment
+ * The root scene-daemon gates its "adb-monitor-*" ops (the live stats behind
+ * the dashboard cards and monitoring overlays) behind a local license check:
+ * ~40s after the app connects, a validator flips RESTRICT=1 (root environment
  * detected via a /data/scene-permission-test probe) and monitor ops start
- * answering empty. A MASTER=1 byte overrides every tier. Both bytes sit in the
- * daemon's writable data/bss pages, so the fix is a root-side poker appended to
- * up.sh (raw resource "up", zip entry res/Bp) which already runs as root on
- * every daemon launch.
+ * answering empty. A MASTER=1 byte overrides every tier; both bytes sit in the
+ * daemon's writable data/bss pages.
  *
- * The poker is update-tolerant: instead of hardcoding gate offsets per daemon
- * build, it locates the AES IV string "scene.omarea.com" in the daemon's data
- * segment at runtime and derives the gate bytes relative to it
- * (MASTER = iv - 0x2D0, RESTRICT = iv + 0x4DF5A; deltas verified against daemon
- * build 2026.11.17 00:01). Writes are validated (byte-range check, read-back
- * verify, restore-on-mismatch) so a daemon rebuild that shifts the layout fails
- * safe back to stock behavior instead of corrupting memory.
+ * The patch extends the daemon launcher script (raw resource "up", archive
+ * entry res/Bp in every 2026 build) with a poker that runs as root on every
+ * daemon start: it locates the daemon's AES IV string ("scene.omarea.com") in
+ * the process's data segment at runtime, derives the two gate bytes relative
+ * to it, validates and holds them open (MASTER=1, RESTRICT=0). A background
+ * loop re-pokes for 300s to cover the daemon's one-shot 63s license
+ * revalidation. A daemon update that shifts the layout fails safe: implausible
+ * byte values abort, and a failed write is restored.
  *
- * In POKER_TEMPLATE every literal dollar is a section sign (U+00A7) to keep
- * Kotlin string templates out of the shell code; execute() swaps them back.
+ * ANCHOR and POKER_BLOCK are shell text with a section sign (§) in place of
+ * every dollar sign, because Kotlin string templates would otherwise
+ * interpolate the shell variables; execute() swaps them back.
  */
 @Suppress("unused")
-val daemonGateBypassPatch = rawResourcePatch(
+val daemonGateBypassPatch = patch(
     name = "Daemon gate bypass",
     description = "Keeps the root scene-daemon's monitor gate open so live stats " +
         "(dashboard cards, system/mini/FPS overlays) keep updating instead of " +
-        "freezing ~40s after connect on rooted devices. Patches the daemon " +
-        "launcher script (raw resource \"up\") to hold two bytes in the running " +
-        "daemon's memory open; unknown daemon layouts fail safe. Requires root " +
-        "(the daemon itself runs as root).",
+        "freezing ~40s after connect on rooted devices. Extends the daemon " +
+        "launcher script (raw resource 'up') with a validated gate poker that " +
+        "runs on every daemon start; unknown daemon layouts fail safe. " +
+        "Requires root (the daemon itself runs as root).",
 ) {
     compatibleWith(COMPATIBILITY_SCENE)
 
     execute {
-        // resourceFile(path, false): raw archive entry, no resource decoding -
-        // res/Bp is an obfuscated zip path, not a decodable resource reference.
-        val up = resourceFile("res/Bp", false)
+        // Raw resource "up" is the daemon launcher; R8 lands it at the
+        // obfuscated archive path res/Bp in every 2026 build. resourceFile()
+        // decodes it on demand (a non-XML resource is extracted byte-identical).
+        val up = resourceFile("res/Bp")
         if (!up.exists()) {
             throw PatchException("res/Bp (raw resource 'up', the daemon launcher) not found")
         }
 
         val text = up.readText()
 
-        // Root-branch daemon-launch block; stable across 2026.10 Alpha13 /
-        // 2026.11 PR1 / PR2. A rebuild that changes it fails loudly here
+        // Root-branch daemon-launch tail, verified on 2026.10 Alpha13 and
+        // 2026.11 PR1/PR2. A rebuild that changes it fails loudly here
         // instead of shipping a broken script.
-        val anchor = "renice -n -20 \u0024(pidof scene-daemon)\n    echo 'Scene-Daemon OK!'"
+        val anchor = ANCHOR.replace('\u00A7', '$')
         if (!text.contains(anchor)) {
             throw PatchException(
                 "daemon launch anchor not found in res/Bp - the launcher script " +
                     "layout changed, re-derive the insertion point",
             )
         }
-        if (text.contains("gp.sh")) {
-            throw PatchException("res/Bp already contains a gate poker - patched twice?")
+        if (text.contains("morphe-patches daemon gate poker")) {
+            throw PatchException("res/Bp already contains the gate poker - patched twice?")
         }
 
-        val poker = POKER_TEMPLATE.trimIndent().replace('\u00A7', '$')
+        val block = POKER_BLOCK.trimIndent().replace('\u00A7', '$')
         val replacement = anchor.replace(
             "    echo 'Scene-Daemon OK!'",
-            poker + "\n    echo 'Scene-Daemon OK!'",
+            block + "\n    echo 'Scene-Daemon OK!'",
         )
         up.writeText(text.replace(anchor, replacement))
-        println("Scene daemon gate bypass: poker inserted into res/Bp")
+        println("Scene daemon gate bypass: poker appended to the daemon launcher (res/Bp)")
     }
 }
 
+// Not a raw block: the echo line keeps its exact 4-space indent, and
+// trimIndent would strip it, so the literal \n form matches the file as-is.
+private const val ANCHOR = "renice -n -20 §(pidof scene-daemon)\n    echo 'Scene-Daemon OK!'"
+
 /**
- * Inserted after the `renice` line in up.sh's root branch: writes gp.sh next to
- * the daemon, runs it once, then a 300s loop (10s cadence) covers the daemon's
- * one-shot 63s license revalidation. Notes for maintainers:
- * - all 64-bit address math goes through awk; hex strings are decoded by an
- *   explicit digit loop because awk cannot parse 0x literals, and $(( )) is
- *   32-bit in toybox/busybox sh while awk %.0f prints doubles exactly
- * - system pidof/dd only: busybox pidof cannot see scene-daemon and busybox dd
- *   lacks conv=notrunc
- * - the subshell loop is intentionally unguarded: concurrent loops poke
- *   idempotent bytes, and any guard marker would go stale across framework
- *   restarts (observed with soft reboots)
+ * Inserted before the "Scene-Daemon OK!" echo, i.e. right after the daemon
+ * launches and gets its priority set. Plain shell, no indirection: find the
+ * daemon, find its AES IV landmark, derive and hold the gate bytes.
+ *
+ * Shell constraints baked in (verified on device):
+ * - /system/bin/pidof and /system/bin/dd only: busybox pidof does not see the
+ *   daemon, and busybox dd lacks conv=notrunc / iflag.
+ * - hex math via awk with a manual digit loop and %.0f: toybox shell
+ *   arithmetic is 32-bit and awk cannot parse 0x literals.
+ * - iflag=skip_bytes,count_bytes with bs=1 for exact single-byte reads.
+ * - temp files under /dev: the launcher runs before /data is writable in some
+ *   boot paths.
  */
-private const val POKER_TEMPLATE = """
-    GPF=§(current_dir)/gp.sh
-    cat > "§GPF" << 'GPEOF'
-#!/system/bin/sh
-P=§(/system/bin/pidof scene-daemon 2>/dev/null | tr -d '\r\n')
-[ -z "§P" ] && exit 0
-grep 'r-xs' /proc/§P/maps 2>/dev/null | grep memfd > /dev/.gpm.§§
-IMG=""
-while read -r LN; do
-  R=§(echo "§LN" | cut -d' ' -f1)
-  S=§{R%%-*}; E=§{R##*-}
-  if [ §((0x§E - 0x§S)) -gt 1048576 ]; then IMG=§S; break; fi
-done < /dev/.gpm.§§
-rm -f /dev/.gpm.§§
-[ -z "§IMG" ] && exit 0
-grep ' rw-p ' /proc/§P/maps 2>/dev/null | while read -r LN; do
-  R=§(echo "§LN" | cut -d' ' -f1)
-  S=§{R%%-*}; E=§{R##*-}
-  SZ=§((0x§E - 0x§S))
-  if [ "§SZ" -gt 4096 ] && [ "§SZ" -le 262144 ]; then echo "§S §SZ"; fi
-done > /dev/.gpr.§§
-IV=""
-while read -r RS RZ; do
-  [ -z "§RS" ] && continue
-  SDS=§(awk "BEGIN{b=\"§RS\";v=0;for(i=1;i<=length(b);i++){c=substr(b,i,1);d=index(\"0123456789abcdef\",c)-1;if(d<0)d=index(\"0123456789ABCDEF\",c)-1;v=v*16+d};printf \"%.0f\", v}")
-  /system/bin/dd if=/proc/§P/mem of=/dev/.gpw.§§ bs=1 iflag=skip_bytes,count_bytes skip=§SDS count=§RZ 2>/dev/null
-  HIT=§(grep -a -b -o -m1 'scene.omarea.com' /dev/.gpw.§§ | head -1 | cut -d: -f1)
-  rm -f /dev/.gpw.§§
-  if [ -n "§HIT" ]; then IV=§(awk "BEGIN{printf \"%.0f\", §SDS+§HIT}"); break; fi
-done < /dev/.gpr.§§
-rm -f /dev/.gpr.§§
-[ -z "§IV" ] && exit 0
-MA=§(awk "BEGIN{printf \"%.0f\", §IV-720}")
-RA=§(awk "BEGIN{printf \"%.0f\", §IV+319578}")
-MB=§(/system/bin/dd if=/proc/§P/mem bs=1 iflag=skip_bytes,count_bytes skip=§MA count=1 2>/dev/null | od -An -tx1 | tr -d ' \n')
-RB=§(/system/bin/dd if=/proc/§P/mem bs=1 iflag=skip_bytes,count_bytes skip=§RA count=1 2>/dev/null | od -An -tx1 | tr -d ' \n')
-case "§MB§RB" in
-  0000|0001|0100|0101) ;;
-  *) exit 0 ;;
-esac
-printf '\x01' | /system/bin/dd of=/proc/§P/mem bs=1 seek=§MA count=1 conv=notrunc 2>/dev/null
-printf '\x00' | /system/bin/dd of=/proc/§P/mem bs=1 seek=§RA count=1 conv=notrunc 2>/dev/null
-VB=§(/system/bin/dd if=/proc/§P/mem bs=1 iflag=skip_bytes,count_bytes skip=§MA count=1 2>/dev/null | od -An -tx1 | tr -d ' \n')
-if [ "§VB" != "01" ]; then
-  printf "\\x§MB" | /system/bin/dd of=/proc/§P/mem bs=1 seek=§MA count=1 conv=notrunc 2>/dev/null
-  printf "\\x§RB" | /system/bin/dd of=/proc/§P/mem bs=1 seek=§RA count=1 conv=notrunc 2>/dev/null
-  exit 0
-fi
-if [ "$(cat /dev/.gp_last 2>/dev/null)" != "§P" ]; then
-  echo "$(date '+%m-%d %H:%M:%S') gp daemon §P gate open" >> "$(dirname "§0")/gp.log"
-  echo "§P" > /dev/.gp_last
-fi
-GPEOF
-    chmod 755 "§GPF"
-    sh "§GPF" 2>/dev/null
-    (
-      i=0
-      while [ §i -lt 30 ]; do
-        sleep 10
-        sh "§GPF" 2>/dev/null
-        i=§((i+1))
-      done
-    ) &
+private const val POKER_BLOCK = """
+    # >>> morphe-patches daemon gate poker >>>
+    # Hold the daemon's monitor gate open: MASTER=1 overrides every gate tier,
+    # RESTRICT=0 lifts the permission map. Both bytes are located relative to
+    # the daemon's AES IV string and validated before every write.
+    mp_gate_poke() {
+        MP_P="§(/system/bin/pidof scene-daemon 2>/dev/null | tr -d '\r\n')"
+        [ -z "§MP_P" ] && return 0
+        # List the daemon's small writable mappings (4KB < size <= 256KB).
+        grep ' rw-p ' /proc/§MP_P/maps 2>/dev/null | while read -r LN; do
+            R="§(echo "§LN" | cut -d' ' -f1)"
+            S="§{R%%-*}"; E="§{R##*-}"
+            SZ="§((0x§E - 0x§S))"
+            if [ "§SZ" -gt 4096 ] && [ "§SZ" -le 262144 ]; then echo "§S §SZ"; fi
+        done > /dev/.mp_gate_rw.§§
+        MP_IV=""
+        while read -r RS RZ; do
+            [ -z "§RS" ] && continue
+            # Hex -> decimal: awk cannot parse 0x literals and shell math is 32-bit.
+            SDS=§(awk "BEGIN{b=\"§RS\";v=0;for(i=1;i<=length(b);i++){c=substr(b,i,1);d=index(\"0123456789abcdef\",c)-1;if(d<0)d=index(\"0123456789ABCDEF\",c)-1;v=v*16+d};printf \"%.0f\", v}")
+            /system/bin/dd if=/proc/§MP_P/mem of=/dev/.mp_gate_buf.§§ bs=1 iflag=skip_bytes,count_bytes skip=§SDS count=§RZ 2>/dev/null
+            HIT="§(grep -a -b -o -m1 'scene.omarea.com' /dev/.mp_gate_buf.§§ | head -1 | cut -d: -f1)"
+            rm -f /dev/.mp_gate_buf.§§
+            if [ -n "§HIT" ]; then MP_IV="§(awk "BEGIN{printf \"%.0f\", §SDS+§HIT}")"; break; fi
+        done < /dev/.mp_gate_rw.§§
+        rm -f /dev/.mp_gate_rw.§§
+        [ -z "§MP_IV" ] && return 0
+        # Gate bytes relative to the IV: MASTER = IV-720, RESTRICT = IV+319578
+        # (deltas verified on daemon build 2026.11.17 00:01).
+        MA="§(awk "BEGIN{printf \"%.0f\", §MP_IV-720}")"
+        RA="§(awk "BEGIN{printf \"%.0f\", §MP_IV+319578}")"
+        MB="§(/system/bin/dd if=/proc/§MP_P/mem bs=1 iflag=skip_bytes,count_bytes skip=§MA count=1 2>/dev/null | od -An -tx1 | tr -d ' \n')"
+        RB="§(/system/bin/dd if=/proc/§MP_P/mem bs=1 iflag=skip_bytes,count_bytes skip=§RA count=1 2>/dev/null | od -An -tx1 | tr -d ' \n')"
+        # Only touch bytes that look like the gate flags; anything else means
+        # the daemon layout moved - leave it alone.
+        case "§MB§RB" in
+            0000|0001|0100|0101) ;;
+            *) return 0 ;;
+        esac
+        printf '\x01' | /system/bin/dd of=/proc/§MP_P/mem bs=1 seek=§MA count=1 conv=notrunc 2>/dev/null
+        printf '\x00' | /system/bin/dd of=/proc/§MP_P/mem bs=1 seek=§RA count=1 conv=notrunc 2>/dev/null
+        VB="§(/system/bin/dd if=/proc/§MP_P/mem bs=1 iflag=skip_bytes,count_bytes skip=§MA count=1 2>/dev/null | od -An -tx1 | tr -d ' \n')"
+        if [ "§VB" != "01" ]; then
+            # Read-back failed: restore both bytes and leave the daemon stock.
+            printf "\\x§MB" | /system/bin/dd of=/proc/§MP_P/mem bs=1 seek=§MA count=1 conv=notrunc 2>/dev/null
+            printf "\\x§RB" | /system/bin/dd of=/proc/§MP_P/mem bs=1 seek=§RA count=1 conv=notrunc 2>/dev/null
+            return 0
+        fi
+        if [ "§(cat /dev/.mp_gate_last 2>/dev/null)" != "§MP_P" ]; then
+            echo "§(date '+%m-%d %H:%M:%S') daemon §MP_P gate open" >> "§(dirname "§0")/gp.log"
+            echo "§MP_P" > /dev/.mp_gate_last
+        fi
+    }
+    mp_gate_poke
+    # The daemon revalidates its license once, ~63s after start; keep poking
+    # for 300s so the gate cannot close. Idempotent if launchers overlap.
+    ( i=0; while [ "§i" -lt 30 ]; do sleep 10; mp_gate_poke; i="§((i+1))"; done ) &
+    # <<< morphe-patches daemon gate poker <<<
 """
