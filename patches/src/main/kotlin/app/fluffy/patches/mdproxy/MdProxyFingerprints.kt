@@ -18,7 +18,6 @@ object TimeLeftGetterFingerprint : Fingerprint(
     parameters = emptyList(),
     filters = listOf(
         string("TimeLeft", StringComparisonType.CONTAINS),
-        methodCall(definingClass = "Lcom/tencent/mmkv/MMKV;", name = "c"),
     ),
 )
 
@@ -46,8 +45,8 @@ object HomeRewardedAdLoaderFingerprint : Fingerprint(
     returnType = "V",
     parameters = emptyList(),
     filters = listOf(
-        string("ca-app-pub-7120795588295806/7843511161", StringComparisonType.CONTAINS),
         methodCall(definingClass = "Lcom/v2ray/ang/ui/HomeFragment${'$'}loadRewardedAd${'$'}1;", name = "<init>"),
+        string("ca-app-pub-7120795588295806/7843511161", StringComparisonType.CONTAINS),
     ),
 )
 
