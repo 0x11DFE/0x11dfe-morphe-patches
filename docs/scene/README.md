@@ -24,6 +24,28 @@ uses it: the user page display and the SN-keyed cloud sync and API calls to omar
 The SN is baked per patch run. The daemon's own server report during a real code
 activation is native code and is not affected.
 
+## Daemon gate bypass
+
+On by default. The root scene-daemon serves the app's live stats (dashboard
+cards, system/mini/FPS overlays) through `adb-monitor-*` ops, but on rooted
+devices a local validator flips a RESTRICT flag ~40s after the app connects and
+those ops start answering empty - the well-known "stats freeze" of modded Scene
+installs. This patch makes the daemon's launcher script (raw resource `up`,
+extracted as `up.sh` and run as root on every daemon start) hold the daemon's
+internal MASTER override byte set (and RESTRICT cleared), which short-circuits
+every gate tier, without touching app bytecode.
+
+The launcher-side poker is version-tolerant: instead of hardcoding offsets per
+daemon build, it locates the daemon's AES IV string (`scene.omarea.com`) in the
+running process's data segment and derives the two gate bytes relative to it.
+Every write is validated (plausible byte values, read-back verify, restore on
+mismatch), so a daemon update that moves the globals fails safe back to stock
+behavior. A background loop re-asserts the bytes for 300s after each daemon
+launch to cover the daemon's one-shot 63s license revalidation; after that the
+gate provably stays open. Unknown or non-root setups are untouched.
+
+Logs one line per daemon instance to `files/gp.log` next to the daemon.
+
 ## Technical reference: what the unlock replicates
 
 The known "Scene N1" mod for `N1 2026.10 Alpha13` edits exactly three methods in
