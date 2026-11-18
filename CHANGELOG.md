@@ -1,3 +1,13 @@
+## [1.12.0](https://github.com/0x11DFE/morphe-patches/compare/v1.11.0...v1.12.0) (2026-11-18)
+
+### New Features
+
+* **mdproxy:** add unlimited time, ad removal and instant speed boost patches ([f544a5d](https://github.com/0x11DFE/morphe-patches/commit/f544a5da45a9bd3c12cd282c50e211c871bb7f0a))
+
+### Bug Fixes
+
+* **mdproxy:** escape $ in inner-class fingerprints, use public dexlib2 refs ([2b5916c](https://github.com/0x11DFE/morphe-patches/commit/2b5916c7affbabcc99b9ea2b06f398f8af45cb5a))
+
 ## [1.11.0](https://github.com/0x11DFE/morphe-patches/compare/v1.10.3...v1.11.0) (2026-11-18)
 
 ### New Features

@@ -23,7 +23,7 @@ are responsible for what you do with it.
 ## Patches list
 
 <!-- PATCHES_START EXPANDED -->
-> **[v1.11.0](https://github.com/0x11DFE/morphe-patches/releases/tag/v1.11.0)**&nbsp;&nbsp;•&nbsp;&nbsp;`main`&nbsp;&nbsp;•&nbsp;&nbsp;7 patches total
+> **[v1.12.0](https://github.com/0x11DFE/morphe-patches/releases/tag/v1.12.0)**&nbsp;&nbsp;•&nbsp;&nbsp;`main`&nbsp;&nbsp;•&nbsp;&nbsp;10 patches total
 <details open>
 <summary>📦 Scene&nbsp;&nbsp;•&nbsp;&nbsp;4 patches</summary>
 <br>
@@ -60,6 +60,25 @@ are responsible for what you do with it.
 | [Disable PairIP license check](docs/waypoint/README.md#disable-pairip-license-check) | Empties com.pairip.licensecheck.LicenseClient.checkLicense so the re-signed patched APK is not killed by Google Play PairIP license enforcement. Generic: works on any PairIP-protected app with this class. |  |
 | [Skip Waypoint onboarding paywall](docs/waypoint/README.md#skip-waypoint-onboarding-paywall) | The paywall screen shown after the Waypoint tutorial immediately invokes the app's own free-choice handler (completeOnboarding + navigate home) and renders nothing. Matches the PaywallScreen bytecode pattern and fails cleanly when the app is rebuilt. |  |
 | [Unlock Waypoint Pro](docs/waypoint/README.md#unlock-waypoint-pro) | Resolves the RN bridge getCustomerInfo promise with a fabricated CustomerInfo carrying an active lifetime 'Waypoint Pro' entitlement (product waypoint_lifetime), and injects the same entitlement into the hybridcommon mapper. Works even when api.revenuecat.com is unreachable. |  |
+
+</details>
+
+<details open>
+<summary>📦 MD PROXY VPN&nbsp;&nbsp;•&nbsp;&nbsp;3 patches</summary>
+<br>
+
+**Package name:** `com.vpnproxymd.mdproxyvpn`
+
+**🎯 Supported versions:**
+
+| v1.0.8.8 |
+| :---: |
+
+| 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
+|----------|----------------|-----------|
+| [Remove Ads](docs/md-proxy/README.md#remove-ads) | Empties every app-side ad loader (banner, interstitial, home rewarded, app-open) and NOPs the rewarded load inside the server-row boost button, so no ad request leaves the device and no fullscreen ad can show. The interstitial show path is null-guarded in the app, so nothing crashes. Pair with 'Unlock Speed Boost' to keep the boost button functional. |  |
+| [Unlimited Time](docs/md-proxy/README.md#unlimited-time) | The session clock (MMKV 'TimeLeft', 1h default, reset to 10 minutes per connect, decremented by a countdown service that kills the VPN on finish) always reports 100 years, so sessions never expire. The countdown display shows the infinity sign instead of a huge number. Reward-ad time top-ups become unnecessary. |  |
+| [Unlock Speed Boost](docs/md-proxy/README.md#unlock-speed-boost) | The per-server 'Speed Boost' is granted after an interstitial ad shows. This rewrites the boost gate: tapping boost writes the selected server into the BoostedServer list immediately (same storage, same rocket icon) and shows the 'Server Boosted!!!' toast. The periodic interstitial the app shows every 3 minutes while connected is silenced too. All obfuscated helper calls (MMKV getter, BoostedServer reader, toast helper) are resolved from the app's own bytecode at patch time, so the rewrite survives R8 renames across updates. |  |
 
 </details>
 
