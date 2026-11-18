@@ -4,6 +4,8 @@ import app.fluffy.patches.shared.Constants.COMPATIBILITY_SCENE
 import app.morphe.patcher.patch.PatchException
 import app.morphe.patcher.patch.patch
 import app.morphe.patcher.patch.resourceFile
+import app.morphe.patcher.patch.listApkEntries
+import java.io.File
 
 /**
  * The root scene-daemon gates its "adb-monitor-*" ops (the live stats behind
@@ -13,8 +15,8 @@ import app.morphe.patcher.patch.resourceFile
  * answering empty. A MASTER=1 byte overrides every tier; both bytes sit in the
  * daemon's writable data/bss pages.
  *
- * The patch extends the daemon launcher script (raw resource "up", archive
- * entry res/Bp in every 2026 build) with a poker that runs as root on every
+ * The patch extends the daemon launcher script (raw resource "up", whose
+ * obfuscated archive path is discovered at patch time) with a poker that runs as root on every
  * daemon start: it locates the daemon's AES IV string ("scene.omarea.com") in
  * the process's data segment at runtime, derives the two gate bytes relative
  * to it, validates and holds them open (MASTER=1, RESTRICT=0). A background
@@ -40,14 +42,7 @@ val daemonGateBypassPatch = patch(
     compatibleWith(COMPATIBILITY_SCENE)
 
     execute {
-        // Raw resource "up" is the daemon launcher; R8 lands it at the
-        // obfuscated archive path res/Bp in every 2026 build. resourceFile()
-        // decodes it on demand (a non-XML resource is extracted byte-identical).
-        val up = resourceFile("res/Bp")
-        if (!up.exists()) {
-            throw PatchException("res/Bp (raw resource 'up', the daemon launcher) not found")
-        }
-
+        val up = findLauncherResource()
         val text = up.readText()
 
         // Adopt the file's line endings so the anchor matches byte-exactly;
@@ -62,12 +57,12 @@ val daemonGateBypassPatch = patch(
         val anchor = reniceLine + nl + echoLine
         if (!text.contains(anchor)) {
             throw PatchException(
-                "daemon launch anchor not found in res/Bp - the launcher script " +
+                "daemon launch anchor not found in the launcher - the script " +
                     "layout changed, re-derive the insertion point",
             )
         }
         if (text.contains("morphe-patches daemon gate poker")) {
-            throw PatchException("res/Bp already contains the gate poker - patched twice?")
+            throw PatchException("launcher already contains the gate poker - patched twice?")
         }
 
         // Insert between the renice (daemon up, priority set) and the OK echo.
@@ -75,7 +70,7 @@ val daemonGateBypassPatch = patch(
             .replace('\u00A7', '$')
             .replace("\n", nl)
         up.writeText(text.replace(anchor, reniceLine + nl + block + nl + echoLine))
-        println("Scene daemon gate bypass: poker appended to the daemon launcher (res/Bp)")
+        println("Scene daemon gate bypass: poker appended to the daemon launcher")
     }
 }
 
@@ -92,6 +87,8 @@ val daemonGateBypassPatch = patch(
  * - iflag=skip_bytes,count_bytes with bs=1 for exact single-byte reads.
  * - temp files under /dev: the launcher can run before /data is writable.
  */
+
+
 private const val POKER_BLOCK = """
 # >>> morphe-patches daemon gate poker >>>
 # Hold the daemon's monitor gate open: MASTER=1 overrides every gate tier,
@@ -164,3 +161,36 @@ mp_gate_poke
   done ) &
 # <<< morphe-patches daemon gate poker <<<
 """
+
+/**
+ * The daemon launcher is the raw resource "up", but its obfuscated archive
+ * path (res/Bp in every 2026 build so far) is assigned by the resource
+ * shrinker and can change on a rebuild. Discover it instead of hardcoding:
+ * try the known entry first, then scan the extensionless res/ entries - the
+ * obfuscator keeps extensions for known types, so extensionless is exactly
+ * the raw-script set - for the daemon-launch tail.
+ */
+private fun findLauncherResource(): File {
+    val probe = "pidof scene-daemon"
+
+    runCatching { resourceFile("res/Bp") }.getOrNull()
+        ?.takeIf { it.exists() && it.length() < 64_000 }
+        ?.takeIf { it.readText().contains(probe) }
+        ?.let { return it }
+
+    val candidates = listApkEntries("res/").filter { entry ->
+        !entry.substringAfterLast('/').contains('.')
+    }
+    for (entry in candidates) {
+        val file = runCatching { resourceFile(entry) }.getOrNull() ?: continue
+        if (!file.exists() || file.length() > 64_000) continue
+        val content = runCatching { file.readText() }.getOrNull() ?: continue
+        if (content.contains(probe) && content.contains("Scene-Daemon OK!")) {
+            println("Scene daemon gate bypass: launcher found at " + entry)
+            return file
+        }
+    }
+    throw PatchException(
+        "daemon launcher (raw resource 'up') not found - no extensionless res/ entry contains the launch script",
+    )
+}
