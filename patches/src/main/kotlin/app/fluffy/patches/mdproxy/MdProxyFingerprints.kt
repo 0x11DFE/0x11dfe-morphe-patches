@@ -47,7 +47,7 @@ object HomeRewardedAdLoaderFingerprint : Fingerprint(
     parameters = emptyList(),
     filters = listOf(
         string("ca-app-pub-7120795588295806/7843511161", StringComparisonType.CONTAINS),
-        methodCall(definingClass = "Lcom/v2ray/ang/ui/HomeFragment$loadRewardedAd$1;", name = "<init>"),
+        methodCall(definingClass = "Lcom/v2ray/ang/ui/HomeFragment${'$'}loadRewardedAd${'$'}1;", name = "<init>"),
     ),
 )
 
@@ -72,7 +72,7 @@ object BannerAdLoaderFingerprint : Fingerprint(
     returnType = "V",
     parameters = emptyList(),
     filters = listOf(
-        methodCall(definingClass = "Lcom/v2ray/ang/ui/HomeFragment$loadBannerAds$1;", name = "<init>"),
+        methodCall(definingClass = "Lcom/v2ray/ang/ui/HomeFragment${'$'}loadBannerAds${'$'}1;", name = "<init>"),
     ),
 )
 

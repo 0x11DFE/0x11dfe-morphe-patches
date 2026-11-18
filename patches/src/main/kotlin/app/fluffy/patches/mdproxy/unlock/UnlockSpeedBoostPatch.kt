@@ -55,9 +55,9 @@ val unlockSpeedBoostPatch = bytecodePatch(
             }
             ?: throw PatchException("toast helper not found in boost handler")
 
-        val selectedServer =
-            "${SelectedServerGetterFingerprint.definingClass}->" +
-                "${SelectedServerGetterFingerprint.name}()Ljava/lang/String;"
+        val selRef = SelectedServerGetterFingerprint.originalMethod
+            ?: throw PatchException("selected-server getter not found")
+        val selectedServer = "${selRef.definingClass}->${selRef.name}()Ljava/lang/String;"
 
         flow.method.apply {
             clearBody()
@@ -85,18 +85,18 @@ val unlockSpeedBoostPatch = bytecodePatch(
                     const-string v3, "dateCreated"
                     invoke-virtual {v2, v3, v1}, Lorg/json/JSONObject;->put(Ljava/lang/String;Ljava/lang/Object;)Lorg/json/JSONObject;
                     new-instance v3, Lorg/json/JSONArray;
-                    invoke-static {}, ${'$'}{boostedReader.definingClass}->${'$'}{boostedReader.name}()Ljava/lang/String;
+                    invoke-static {}, ${boostedReader.definingClass}->${boostedReader.name}()Ljava/lang/String;
                     move-result-object v4
                     invoke-direct {v3, v4}, Lorg/json/JSONArray;-><init>(Ljava/lang/String;)V
                     invoke-virtual {v3, v2}, Lorg/json/JSONArray;->put(Ljava/lang/Object;)Lorg/json/JSONArray;
                     invoke-virtual {v3}, Lorg/json/JSONArray;->toString()Ljava/lang/String;
                     move-result-object v4
-                    invoke-static {}, ${'$'}{mmkvGetter.definingClass}->${'$'}{mmkvGetter.name}()Lcom/tencent/mmkv/MMKV;
+                    invoke-static {}, ${mmkvGetter.definingClass}->${mmkvGetter.name}()Lcom/tencent/mmkv/MMKV;
                     move-result-object v5
                     const-string v6, "BoostedServer"
                     invoke-virtual {v5, v6, v4}, Lcom/tencent/mmkv/MMKV;->i(Ljava/lang/String;Ljava/lang/String;)Z
                     const-string v6, "Server Boosted!!!"
-                    invoke-static {p1, v6}, ${'$'}{toast.definingClass}->${'$'}{toast.name}(Landroid/content/Context;Ljava/lang/String;)V
+                    invoke-static {p1, v6}, ${toast.definingClass}->${toast.name}(Landroid/content/Context;Ljava/lang/String;)V
                     :cond_mrp_done
                     return-void
                 """.trimIndent(),
