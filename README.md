@@ -23,7 +23,7 @@ are responsible for what you do with it.
 ## Patches list
 
 <!-- PATCHES_START EXPANDED -->
-> **[v1.10.2](https://github.com/0x11DFE/morphe-patches/releases/tag/v1.10.2)**&nbsp;&nbsp;•&nbsp;&nbsp;`main`&nbsp;&nbsp;•&nbsp;&nbsp;6 patches total
+> **[v1.10.3](https://github.com/0x11DFE/morphe-patches/releases/tag/v1.10.3)**&nbsp;&nbsp;•&nbsp;&nbsp;`main`&nbsp;&nbsp;•&nbsp;&nbsp;6 patches total
 <details open>
 <summary>📦 Scene&nbsp;&nbsp;•&nbsp;&nbsp;3 patches</summary>
 <br>

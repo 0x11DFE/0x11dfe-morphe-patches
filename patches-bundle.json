@@ -1,7 +1,7 @@
 {
-  "created_at": "2026-11-18T12:00:52",
-  "description": "## [1.10.2](https://github.com/0x11DFE/morphe-patches/compare/v1.10.1...v1.10.2) (2026-11-18)\n\n### Bug Fixes\n\n* align smali pin with patcher 2.4.0 (4220ae75f7) ([905446a](https://github.com/0x11DFE/morphe-patches/commit/905446a1507f2c94e930af4f02e1ab137ace3393))",
-  "download_url": "https://github.com/0x11DFE/morphe-patches/releases/download/v1.10.2/patches-1.10.2.mpp",
+  "created_at": "2026-11-18T12:22:36",
+  "description": "## [1.10.3](https://github.com/0x11DFE/morphe-patches/compare/v1.10.2...v1.10.3) (2026-11-18)\n\n### Bug Fixes\n\n* **scene:** adopt the launcher's CRLF line endings in the anchor ([5e7c0f2](https://github.com/0x11DFE/morphe-patches/commit/5e7c0f2d65454b083fa2214ea9cb2e02110f7a87))",
+  "download_url": "https://github.com/0x11DFE/morphe-patches/releases/download/v1.10.3/patches-1.10.3.mpp",
   "signature_download_url": "",
-  "version": "1.10.2"
+  "version": "1.10.3"
 }

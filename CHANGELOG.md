@@ -1,3 +1,9 @@
+## [1.10.3](https://github.com/0x11DFE/morphe-patches/compare/v1.10.2...v1.10.3) (2026-11-18)
+
+### Bug Fixes
+
+* **scene:** adopt the launcher's CRLF line endings in the anchor ([5e7c0f2](https://github.com/0x11DFE/morphe-patches/commit/5e7c0f2d65454b083fa2214ea9cb2e02110f7a87))
+
 ## [1.10.2](https://github.com/0x11DFE/morphe-patches/compare/v1.10.1...v1.10.2) (2026-11-18)
 
 ### Bug Fixes
