@@ -1,3 +1,9 @@
+## [1.12.4](https://github.com/0x11DFE/morphe-patches/compare/v1.12.3...v1.12.4) (2026-11-18)
+
+### Bug Fixes
+
+* **mdproxy:** shorten the patch descriptions ([2e13e32](https://github.com/0x11DFE/morphe-patches/commit/2e13e32a62dad80a09a7f4d6b9927aa67063d0d3))
+
 ## [1.12.3](https://github.com/0x11DFE/morphe-patches/compare/v1.12.2...v1.12.3) (2026-11-18)
 
 ### Bug Fixes
