@@ -5,20 +5,19 @@ voucher/session-time monetization layer. Supported version: v1.0.8.8
 (versionCode 29).
 
 The app keeps its `com.v2ray.ang` class names, but the MMKV helper class and
-the R8-merged click-handler lambdas are renamed on every build. All patch
-targets are located by content fingerprints (ad-unit constants, MMKV keys,
-format strings), never by obfuscated names, and the Speed Boost rewrite
-resolves its helper calls from the app's own bytecode at patch time.
+the R8-merged click-handler lambdas are renamed on every build. Patch targets
+are located by content fingerprints (MMKV keys, format strings, GMS ad-load
+calls), never by obfuscated names, and the Speed Boost rewrite resolves its
+helper calls from the app's own bytecode at patch time.
 
 ## Unlimited Time
 
-Sessions are metered by an MMKV `TimeLeft` value (1 hour default, reset to 10
-minutes at connect when it runs low, decremented by a countdown service that
-stops the VPN when it reaches zero). The patch replaces the getter so it always
-returns 100 years, which also skips the low-time reset at connect, and prepends
-an infinity branch to the countdown formatter so the display shows `∞` instead
-of a 6-digit day count. Voucher validity and the rewarded-ad time top-up flow
-are left untouched and simply become unnecessary.
+Sessions are metered by an MMKV `TimeLeft` value: 1 hour by default, reset to
+10 minutes at connect when it runs low, and counted down by a service that
+stops the VPN at zero. The patch makes the getter return 100 years, so the
+reset never fires, and makes the countdown formatter show the infinity sign
+instead of a day count. Vouchers and the rewarded-ad time top-up stay as they
+are and become unnecessary.
 
 ## Remove Ads
 
@@ -31,11 +30,11 @@ neutralized, not the whole click handler.
 
 ## Unlock Speed Boost
 
-The per-server "Speed Boost" is granted when an interstitial ad actually
-shows; the app also re-shows that interstitial every 3 minutes while
-connected. The patch rewrites the gate method: a boost tap writes the selected
-server into the `BoostedServer` MMKV list directly (same storage the ad flow
-uses, so the rocket badge and per-row state behave identically) and shows the
-`Server Boosted!!!` toast; non-boost callers of the gate return immediately,
-which also silences the periodic interstitial. Works together with
+The per-server boost is granted when an interstitial shows, and the app
+re-shows that interstitial every 3 minutes while connected. The patch
+rewrites the gate: a boost tap writes the selected server into the
+`BoostedServer` MMKV list right away, with the same rocket badge and toast,
+and the other callers of the gate return immediately, which silences the
+periodic interstitial. Helper calls are resolved from the app's own bytecode
+at patch time, so the rewrite survives R8 renames. Works together with
 "Remove Ads".

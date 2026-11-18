@@ -15,13 +15,9 @@ import com.android.tools.smali.dexlib2.iface.reference.MethodReference
 @Suppress("unused")
 val unlockSpeedBoostPatch = bytecodePatch(
     name = "Unlock Speed Boost",
-    description = "The per-server 'Speed Boost' is granted after an interstitial ad shows. " +
-        "This rewrites the boost gate: tapping boost writes the selected server into the " +
-        "BoostedServer list immediately (same storage, same rocket icon) and shows the " +
-        "'Server Boosted!!!' toast. The periodic interstitial the app shows every 3 minutes " +
-        "while connected is silenced too. All obfuscated helper calls (MMKV getter, " +
-        "BoostedServer reader, toast helper) are resolved from the app's own bytecode at " +
-        "patch time, so the rewrite survives R8 renames across updates.",
+    description = "Grants the per-server boost on tap instead of after an interstitial. " +
+        "Same storage, rocket icon and toast as the ad flow. The 3-minute interstitial " +
+        "while connected is gone as well. Use together with 'Remove Ads'.",
 ) {
     compatibleWith(COMPATIBILITY_MDPROXY)
 

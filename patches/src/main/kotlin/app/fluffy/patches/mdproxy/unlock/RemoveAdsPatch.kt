@@ -18,11 +18,9 @@ import com.android.tools.smali.dexlib2.iface.reference.MethodReference
 @Suppress("unused")
 val removeAdsPatch = bytecodePatch(
     name = "Remove Ads",
-    description = "Empties every app-side ad loader (banner, interstitial, home rewarded, " +
-        "app-open) and NOPs the rewarded load inside the server-row boost button, so no ad " +
-        "request leaves the device and no fullscreen ad can show. The interstitial show path " +
-        "is null-guarded in the app, so nothing crashes. Pair with 'Unlock Speed Boost' to " +
-        "keep the boost button functional.",
+    description = "Empties the banner, interstitial, rewarded and app-open ad loaders and " +
+        "the rewarded load in the server-row boost button. No ad request leaves the device. " +
+        "Use with 'Unlock Speed Boost' to keep the boost button working.",
 ) {
     compatibleWith(COMPATIBILITY_MDPROXY)
 

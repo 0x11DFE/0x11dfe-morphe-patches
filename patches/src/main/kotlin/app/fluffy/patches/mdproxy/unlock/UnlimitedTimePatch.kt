@@ -10,10 +10,8 @@ import app.morphe.patcher.patch.bytecodePatch
 @Suppress("unused")
 val unlimitedTimePatch = bytecodePatch(
     name = "Unlimited Time",
-    description = "The session clock (MMKV 'TimeLeft', 1h default, reset to 10 minutes per " +
-        "connect, decremented by a countdown service that kills the VPN on finish) always " +
-        "reports 100 years, so sessions never expire. The countdown display shows the " +
-        "infinity sign instead of a huge number. Reward-ad time top-ups become unnecessary.",
+    description = "The session clock always reports 100 years, so sessions never expire. " +
+        "The countdown display shows the infinity sign.",
 ) {
     compatibleWith(COMPATIBILITY_MDPROXY)
 
