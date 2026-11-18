@@ -1,7 +1,7 @@
 {
-  "created_at": "2026-11-18T18:22:07",
-  "description": "## [1.12.2](https://github.com/0x11DFE/morphe-patches/compare/v1.12.1...v1.12.2) (2026-11-18)\n\n### Bug Fixes\n\n* **mdproxy:** skip field references when extracting call sites from bytecode ([3181e26](https://github.com/0x11DFE/morphe-patches/commit/3181e26ba9f9840d5fc52df024eeca2456d0168a))",
-  "download_url": "https://github.com/0x11DFE/morphe-patches/releases/download/v1.12.2/patches-1.12.2.mpp",
+  "created_at": "2026-11-18T18:46:53",
+  "description": "## [1.12.3](https://github.com/0x11DFE/morphe-patches/compare/v1.12.2...v1.12.3) (2026-11-18)\n\n### Bug Fixes\n\n* **mdproxy:** release cast fix and unit-agnostic fingerprints ([cc7ce33](https://github.com/0x11DFE/morphe-patches/commit/cc7ce33c4df361387cc340bd95844a0addc7e7eb))\n* **scene:** discover the launcher resource instead of hardcoding res/Bp ([e07ba5f](https://github.com/0x11DFE/morphe-patches/commit/e07ba5fe206f32149c34ffb04c7bc62d122d3c44))",
+  "download_url": "https://github.com/0x11DFE/morphe-patches/releases/download/v1.12.3/patches-1.12.3.mpp",
   "signature_download_url": "",
-  "version": "1.12.2"
+  "version": "1.12.3"
 }

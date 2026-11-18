@@ -1,3 +1,10 @@
+## [1.12.3](https://github.com/0x11DFE/morphe-patches/compare/v1.12.2...v1.12.3) (2026-11-18)
+
+### Bug Fixes
+
+* **mdproxy:** release cast fix and unit-agnostic fingerprints ([cc7ce33](https://github.com/0x11DFE/morphe-patches/commit/cc7ce33c4df361387cc340bd95844a0addc7e7eb))
+* **scene:** discover the launcher resource instead of hardcoding res/Bp ([e07ba5f](https://github.com/0x11DFE/morphe-patches/commit/e07ba5fe206f32149c34ffb04c7bc62d122d3c44))
+
 ## [1.12.2](https://github.com/0x11DFE/morphe-patches/compare/v1.12.1...v1.12.2) (2026-11-18)
 
 ### Bug Fixes
