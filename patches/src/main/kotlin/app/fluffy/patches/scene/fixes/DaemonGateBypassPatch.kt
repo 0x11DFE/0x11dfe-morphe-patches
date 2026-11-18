@@ -3,6 +3,7 @@ package app.fluffy.patches.scene.fixes
 import app.fluffy.patches.shared.Constants.COMPATIBILITY_SCENE
 import app.morphe.patcher.patch.PatchException
 import app.morphe.patcher.patch.rawResourcePatch
+import app.morphe.patcher.patch.resourceFile
 
 /**
  * The root scene-daemon gates its "adb-monitor-*" ops (the live stats behind the
@@ -38,10 +39,14 @@ val daemonGateBypassPatch = rawResourcePatch(
     compatibleWith(COMPATIBILITY_SCENE)
 
     execute {
-        val up = get("res/Bp")
-            ?: throw PatchException("res/Bp (raw resource 'up', the daemon launcher) not found")
+        // resourceFile(path, false): raw archive entry, no resource decoding -
+        // res/Bp is an obfuscated zip path, not a decodable resource reference.
+        val up = resourceFile("res/Bp", false)
+        if (!up.exists()) {
+            throw PatchException("res/Bp (raw resource 'up', the daemon launcher) not found")
+        }
 
-        val text = up.readBytes().decodeToString()
+        val text = up.readText()
 
         // Root-branch daemon-launch block; stable across 2026.10 Alpha13 /
         // 2026.11 PR1 / PR2. A rebuild that changes it fails loudly here
@@ -62,7 +67,7 @@ val daemonGateBypassPatch = rawResourcePatch(
             "    echo 'Scene-Daemon OK!'",
             poker + "\n    echo 'Scene-Daemon OK!'",
         )
-        up.writeBytes(text.replace(anchor, replacement).encodeToByteArray())
+        up.writeText(text.replace(anchor, replacement))
         println("Scene daemon gate bypass: poker inserted into res/Bp")
     }
 }
