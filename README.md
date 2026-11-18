@@ -23,9 +23,9 @@ are responsible for what you do with it.
 ## Patches list
 
 <!-- PATCHES_START EXPANDED -->
-> **[v1.10.3](https://github.com/0x11DFE/morphe-patches/releases/tag/v1.10.3)**&nbsp;&nbsp;•&nbsp;&nbsp;`main`&nbsp;&nbsp;•&nbsp;&nbsp;6 patches total
+> **[v1.11.0](https://github.com/0x11DFE/morphe-patches/releases/tag/v1.11.0)**&nbsp;&nbsp;•&nbsp;&nbsp;`main`&nbsp;&nbsp;•&nbsp;&nbsp;7 patches total
 <details open>
-<summary>📦 Scene&nbsp;&nbsp;•&nbsp;&nbsp;3 patches</summary>
+<summary>📦 Scene&nbsp;&nbsp;•&nbsp;&nbsp;4 patches</summary>
 <br>
 
 **Package name:** `com.omarea.vtools`
@@ -40,6 +40,7 @@ are responsible for what you do with it.
 | [Daemon gate bypass](docs/scene/README.md#daemon-gate-bypass) | Keeps the root scene-daemon's monitor gate open so live stats (dashboard cards, system/mini/FPS overlays) keep updating instead of freezing ~40s after connect on rooted devices. Extends the daemon launcher script (raw resource 'up') with a validated gate poker that runs on every daemon start; unknown daemon layouts fail safe. Requires root (the daemon itself runs as root). |  |
 | [Random device ID](docs/scene/README.md#random-device-id) | Replaces the device SN (serial_id/serial_no/cpu_id/gid read by the root scene-daemon) with a random one everywhere the app itself uses it: the user page display and the SN-keyed cloud sync / API calls to omarea. The SN is baked per patch run. The daemon's own server report during real code activation is native and not affected. |  |
 | [Unlock Scene N1](docs/scene/README.md#unlock-scene-n1) | Unlocks Scene N1: the license state parser and the activation request are forced to a perpetual success (configurable expiry), the activation code type is reported as perpetual, and the APK signature MD5 the app reports to omarea's activation binding is spoofed to the original signing key so re-signed builds still match. | • License expiry date |
+| [Unlock optional features](docs/scene/README.md#unlock-optional-features) | Shows the gated entries of the tuner's Optional features dialog: Refresh rate (Samsung panels report no discrete 60Hz mode through the display API, so Scene hides the control), FAS in games (cloud lp-branch gated) and CPU limiters (online-profile gated). The features themselves work locally; Bypass power supply stays hidden on devices without a supported charging sysfs node. |  |
 
 </details>
 

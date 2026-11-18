@@ -1,3 +1,9 @@
+## [1.11.0](https://github.com/0x11DFE/morphe-patches/compare/v1.10.3...v1.11.0) (2026-11-18)
+
+### New Features
+
+* **scene:** unlock gated optional features; keep daemon gate open for the daemon's lifetime ([454bd38](https://github.com/0x11DFE/morphe-patches/commit/454bd38f8ef4ecd0c2183c6f032b59e04f0e79b0))
+
 ## [1.10.3](https://github.com/0x11DFE/morphe-patches/compare/v1.10.2...v1.10.3) (2026-11-18)
 
 ### Bug Fixes
