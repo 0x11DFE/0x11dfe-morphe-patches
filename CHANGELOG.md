@@ -1,3 +1,9 @@
+## [1.12.2](https://github.com/0x11DFE/morphe-patches/compare/v1.12.1...v1.12.2) (2026-11-18)
+
+### Bug Fixes
+
+* **mdproxy:** skip field references when extracting call sites from bytecode ([3181e26](https://github.com/0x11DFE/morphe-patches/commit/3181e26ba9f9840d5fc52df024eeca2456d0168a))
+
 ## [1.12.1](https://github.com/0x11DFE/morphe-patches/compare/v1.12.0...v1.12.1) (2026-11-18)
 
 ### Bug Fixes
