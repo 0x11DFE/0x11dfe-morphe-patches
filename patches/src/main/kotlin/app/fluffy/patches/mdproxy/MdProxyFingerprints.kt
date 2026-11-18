@@ -36,29 +36,33 @@ object CountdownFormatterFingerprint : Fingerprint(
 )
 
 /**
- * Rewarded-ad loader on the home screen (HomeFragment.n0): parameterless,
- * loads ad unit .../7843511161 through the HomeFragment$loadRewardedAd$1
- * callback. The server-row click handler loads the same unit but through
- * ServerAdapter$loadRewardedAd$1, which keeps the two apart.
+ * Rewarded-ad loader on the home screen (HomeFragment.n0): parameterless
+ * method that loads a rewarded ad through the GMS SDK. Pinned by the
+ * RewardedAd.load call and zero parameters; the ad unit is matched only by
+ * its ca-app-pub prefix, so rotating units in the AdMob console does not
+ * break the fingerprint. The server-row click handler loads a rewarded ad
+ * too, but takes a View parameter.
  */
 object HomeRewardedAdLoaderFingerprint : Fingerprint(
     returnType = "V",
     parameters = emptyList(),
     filters = listOf(
-        methodCall(definingClass = "Lcom/v2ray/ang/ui/HomeFragment${'$'}loadRewardedAd${'$'}1;", name = "<init>"),
-        string("ca-app-pub-7120795588295806/7843511161", StringComparisonType.CONTAINS),
+        string("ca-app-pub", StringComparisonType.CONTAINS),
+        methodCall(definingClass = "Lcom/google/android/gms/ads/rewarded/RewardedAd;", name = "load"),
     ),
 )
 
 /**
- * Interstitial loader (HomeFragment.k0): the only method that references
- * interstitial unit .../3815235509.
+ * Interstitial loader (HomeFragment.k0): the only (Context)V method calling
+ * GMS InterstitialAd.load; the ad unit is matched only by its ca-app-pub
+ * prefix.
  */
 object InterstitialAdLoaderFingerprint : Fingerprint(
     returnType = "V",
     parameters = listOf("Landroid/content/Context;"),
     filters = listOf(
-        string("ca-app-pub-7120795588295806/3815235509", StringComparisonType.CONTAINS),
+        string("ca-app-pub", StringComparisonType.CONTAINS),
+        methodCall(definingClass = "Lcom/google/android/gms/ads/interstitial/InterstitialAd;", name = "load"),
     ),
 )
 
@@ -76,29 +80,31 @@ object BannerAdLoaderFingerprint : Fingerprint(
 )
 
 /**
- * App-open ad loader (AngApplication$AppOpenAdManager.a): the only method
- * referencing app-open unit .../6054386034.
+ * App-open ad loader (AngApplication$AppOpenAdManager.a): the only
+ * (FragmentActivity)V method calling GMS AppOpenAd.load; the ad unit is
+ * matched only by its ca-app-pub prefix.
  */
 object AppOpenAdLoaderFingerprint : Fingerprint(
     returnType = "V",
     parameters = listOf("Landroidx/fragment/app/FragmentActivity;"),
     filters = listOf(
-        string("ca-app-pub-7120795588295806/6054386034", StringComparisonType.CONTAINS),
+        string("ca-app-pub", StringComparisonType.CONTAINS),
+        methodCall(definingClass = "Lcom/google/android/gms/ads/appopen/AppOpenAd;", name = "load"),
     ),
 )
 
 /**
  * Server-row boost click handler (R8-merged lambda, m61 on v1.0.8.8): the
- * packed-switch onClick that boosts a server row by loading rewarded unit
- * .../7843511161. "Ads are not available yet" is shared with the main
- * click handler, but only this method also carries the ad-unit constant.
+ * packed-switch onClick that boosts a server row by loading a rewarded ad.
+ * Pinned by (View)V + RewardedAd.load + a ca-app-pub const; the main click
+ * handler shares the toast strings but never loads ads itself.
  */
 object ServerRowBoostClickFingerprint : Fingerprint(
     returnType = "V",
     parameters = listOf("Landroid/view/View;"),
     filters = listOf(
-        string("Ads are not available yet", StringComparisonType.CONTAINS),
-        string("ca-app-pub-7120795588295806/7843511161", StringComparisonType.CONTAINS),
+        string("ca-app-pub", StringComparisonType.CONTAINS),
+        methodCall(definingClass = "Lcom/google/android/gms/ads/rewarded/RewardedAd;", name = "load"),
     ),
 )
 
