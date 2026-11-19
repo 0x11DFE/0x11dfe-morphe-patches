@@ -1,6 +1,6 @@
 # 0x11DFE Morphe patches
 
-Patches for use with [Morphe](https://morphe.software) by **0x11DFE**. The patch list
+Patches for use with [Morphe](https://morphe.software) by 0x11DFE. The patch list
 below shows every supported app and version. Notes, download sources and update steps
 for each app live in `docs/<app>/README.md`.
 
